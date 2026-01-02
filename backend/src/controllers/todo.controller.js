@@ -9,4 +9,19 @@ const getTodo = async (req, res) => {
     res.status(500).json({ error: "failed to fetch todos" });
   }
 };
-export default getTodo;
+const putTodo = async (req, res) => {
+  const task = req.body.task;
+  const completed = req.body.completed;
+  const dateAndTime = req.body.dateAndTime;
+  try {
+    const pool = getDB();
+    await pool.query(
+      "INSERT INTO todos (task,completed,dateAndTime) VALUES(?,?,?)",
+      [task, completed, dateAndTime]
+    );
+  } catch (error) {
+    console.log(`couldnt insert the data into the database,${error}`);
+  }
+};
+
+export default { getTodo, putTodo };

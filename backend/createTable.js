@@ -5,7 +5,6 @@ const createTable = async () => {
   const pool = getDB();
   const query = `CREATE TABLE todos(
  id INT PRIMARY KEY,
- email VARCHAR(50),
  task VARCHAR(255) NOT NULL,
  dateAndTime varchar(255),
  completed BOOLEAN DEFAULT FALSE
