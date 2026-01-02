@@ -11,14 +11,13 @@ export const getTodo = async (req, res) => {
 };
 export const postTodo = async (req, res) => {
   try {
-    const id = req.body.id;
     const task = req.body.task;
     const completed = req.body.completed;
     const dateAndTime = req.body.dateAndTime;
     const pool = getDB();
     await pool.query(
-      "INSERT INTO todos (id,task,completed,dateAndTime) VALUES(?,?,?,?)",
-      [id, task, completed, dateAndTime]
+      "INSERT INTO todos (task,completed,dateAndTime) VALUES(?,?,?)",
+      [task, completed, dateAndTime]
     );
     res.status(201).json({ message: "todo added" });
   } catch (error) {
