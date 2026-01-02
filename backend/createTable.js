@@ -4,7 +4,7 @@ const createTable = async () => {
   await dbConnect();
   const pool = getDB();
   const query = `CREATE TABLE todos(
- id INT PRIMARY KEY,
+ id AUTO_INCREMENT INT PRIMARY KEY,
  task VARCHAR(255) NOT NULL,
  dateAndTime varchar(255),
  completed BOOLEAN DEFAULT FALSE

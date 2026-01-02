@@ -1,5 +1,5 @@
 import { getDB } from "../config/dbconfig.js";
-const getTodo = async (req, res) => {
+export const getTodo = async (req, res) => {
   try {
     const pool = getDB();
     const [data] = await pool.query(`SELECT * FROM todos`);
@@ -9,19 +9,19 @@ const getTodo = async (req, res) => {
     res.status(500).json({ error: "failed to fetch todos" });
   }
 };
-const putTodo = async (req, res) => {
-  const task = req.body.task;
-  const completed = req.body.completed;
-  const dateAndTime = req.body.dateAndTime;
+export const postTodo = async (req, res) => {
   try {
+    const id = req.body.id;
+    const task = req.body.task;
+    const completed = req.body.completed;
+    const dateAndTime = req.body.dateAndTime;
     const pool = getDB();
     await pool.query(
-      "INSERT INTO todos (task,completed,dateAndTime) VALUES(?,?,?)",
-      [task, completed, dateAndTime]
+      "INSERT INTO todos (id,task,completed,dateAndTime) VALUES(?,?,?,?)",
+      [id, task, completed, dateAndTime]
     );
+    res.status(201).json({ message: "todo added" });
   } catch (error) {
     console.log(`couldnt insert the data into the database,${error}`);
   }
 };
-
-export default { getTodo, putTodo };

@@ -7,7 +7,7 @@ const portnum = process.env.PORT_NUMBER;
 const startServer = async () => {
   await dbConnect();
   app.listen(portnum, (req, res) => {
-    console.log("server is running in port 4000");
+    console.log("server is running in port 3307");
   });
 };
 startServer();
