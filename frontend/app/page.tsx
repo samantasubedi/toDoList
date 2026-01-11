@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 
 function Homepage() {
+  const { setTheme } = useTheme();
   const [input, setinput] = useState<string>("");
   const [task, settask] = useState<string[]>([]);
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,6 +28,22 @@ function Homepage() {
         ></input>
         <button type="submit">Add</button>
       </form>
+
+      <button
+        onClick={() => {
+          setTheme("light");
+        }}
+      >
+        change to lightmode
+      </button>
+
+      <button
+        onClick={() => {
+          setTheme("dark");
+        }}
+      >
+        change to darkmode
+      </button>
     </>
   );
 }
