@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useTheme } from "next-themes";
+import { Icon } from "@iconify/react";
 
 function Homepage() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [input, setinput] = useState<string>("");
   const [task, settask] = useState<string[]>([]);
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,7 +19,21 @@ function Homepage() {
     console.log(task);
   };
   return (
-    <>
+    <div className=" h-screen">
+      <div className="flex justify-end-safe ">
+        <button
+          className="cursor-pointer text-3xl mr-5"
+          onClick={() => {
+            theme == "dark" ? setTheme("light") : setTheme("dark");
+          }}
+        >
+          {theme == "dark" ? (
+            <Icon icon="line-md:sun-rising-loop" />
+          ) : (
+            <Icon icon="line-md:moon-rising-alt-loop" />
+          )}
+        </button>
+      </div>
       <form onSubmit={handleAdd}>
         <input
           type="text"
@@ -28,23 +43,7 @@ function Homepage() {
         ></input>
         <button type="submit">Add</button>
       </form>
-
-      <button
-        onClick={() => {
-          setTheme("light");
-        }}
-      >
-        change to lightmode
-      </button>
-
-      <button
-        onClick={() => {
-          setTheme("dark");
-        }}
-      >
-        change to darkmode
-      </button>
-    </>
+    </div>
   );
 }
 export default Homepage;
