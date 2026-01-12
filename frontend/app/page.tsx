@@ -1,7 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Icon } from "@iconify/react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 function Homepage() {
   const { theme, setTheme } = useTheme();
@@ -16,8 +18,11 @@ function Homepage() {
     if (!input.trim()) return;
     settask((prevtask) => [...prevtask, input]);
     setinput("");
-    console.log(task);
+   
   };
+   useEffect(() => {
+      console.log(task);
+    },[task]);
   return (
     <div className=" h-screen">
       <div className="flex justify-end-safe ">
@@ -28,21 +33,29 @@ function Homepage() {
           }}
         >
           {theme == "dark" ? (
-            <Icon icon="line-md:sun-rising-loop" />
-          ) : (
             <Icon icon="line-md:moon-rising-alt-loop" />
+          ) : (
+            <Icon icon="line-md:sun-rising-loop" />
           )}
         </button>
       </div>
-      <form onSubmit={handleAdd}>
-        <input
-          type="text"
-          value={input}
-          placeholder="Enter your task"
-          onChange={handleinputchange}
-        ></input>
-        <button type="submit">Add</button>
-      </form>
+      <div className="flex justify-center ">
+        <form onSubmit={handleAdd}>
+          <Input
+            placeholder="Add a Task"
+            type="text"
+            onChange={handleinputchange}
+            value={input}
+            className="w-100"
+          />
+          <Button
+            type="submit"
+            className="ml-6 bg-teal-700 dark:text-white font-semibold  hover:bg-teal-500 transition-colors duration-300 ease-in-out cursor-pointer"
+          >
+            ADD
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }
