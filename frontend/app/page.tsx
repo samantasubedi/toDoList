@@ -4,25 +4,31 @@ import { useTheme } from "next-themes";
 import { Icon } from "@iconify/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 function Homepage() {
   const { theme, setTheme } = useTheme();
   const [input, setinput] = useState<string>("");
   const [task, settask] = useState<string[]>([]);
+  const [empty, setempty] = useState<boolean>(false);
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const data = e.target.value;
     setinput(data);
   };
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim()) {
+      toast.error("Enter a task before adding ");
+      return;
+    }
     settask((prevtask) => [...prevtask, input]);
     setinput("");
-   
+    axios.post("/api/routes", { task: "do the homework", completed: false });
   };
-   useEffect(() => {
-      console.log(task);
-    },[task]);
+  useEffect(() => {
+    console.log(task);
+  }, [task]);
   return (
     <div className=" h-screen">
       <div className="flex justify-end-safe ">
