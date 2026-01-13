@@ -14,10 +14,10 @@ export const postTodo = async (req, res) => {
     const task = req.body.task;
     const completed = req.body.completed;
     const pool = getDB();
-    await pool.query(
-      "INSERT INTO todos (task,completed) VALUES(?,?,?)",
-      [task, completed, dateAndTime]
-    );
+    await pool.query("INSERT INTO todos (task,completed) VALUES(?,?)", [
+      task,
+      completed,
+    ]);
     res.status(201).json({ message: "todo added" });
   } catch (error) {
     console.log(`couldn't insert the data into the database,${error}`);

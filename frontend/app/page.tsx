@@ -11,7 +11,7 @@ function Homepage() {
   const { theme, setTheme } = useTheme();
   const [input, setinput] = useState<string>("");
   const [task, settask] = useState<string[]>([]);
-  const [empty, setempty] = useState<boolean>(false);
+
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const data = e.target.value;
     setinput(data);
@@ -24,11 +24,24 @@ function Homepage() {
     }
     settask((prevtask) => [...prevtask, input]);
     setinput("");
-    axios.post("/api/routes", { task: "do the homework", completed: false });
+    axios.post("http://localhost:3307/api/routes", {
+      task: input,
+      completed: false,
+    });
   };
   useEffect(() => {
     console.log(task);
-  }, [task]);
+    async function fetchdata() {
+      try {
+        let res = await axios.get("http://localhost:3307/api/routes");
+        let fetchedData = res.data;
+        console.log("fetched data is ", fetchedData);
+      } catch (err) {
+        console.log(`couldnt fetch todos ${err}`);
+      }
+    }
+    fetchdata();
+  }, []);
   return (
     <div className=" h-screen">
       <div className="flex justify-end-safe ">
