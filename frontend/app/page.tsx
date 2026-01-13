@@ -6,35 +6,44 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import axios from "axios";
-
+type todotype = {
+  id: number | null;
+  task: string;
+  dateAndTime: string;
+  completed: boolean;
+};
 function Homepage() {
   const { theme, setTheme } = useTheme();
   const [input, setinput] = useState<string>("");
-  const [task, settask] = useState<string[]>([]);
+  const [task, settask] = useState<todotype[]>([]);
 
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const data = e.target.value;
     setinput(data);
   };
-  const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) {
       toast.error("Enter a task before adding ");
       return;
     }
-    settask((prevtask) => [...prevtask, input]);
     setinput("");
-    axios.post("http://localhost:3307/api/routes", {
-      task: input,
-      completed: false,
-    });
+
+    try {
+      await axios.post("http://localhost:3307/api/routes", {
+        task: input,
+        completed: false,
+      });
+    } catch (err) {
+      console.log(`cannot insert data into the database, ${err}`);
+    }
   };
   useEffect(() => {
-    console.log(task);
     async function fetchdata() {
       try {
         let res = await axios.get("http://localhost:3307/api/routes");
-        let fetchedData = res.data;
+        let fetchedData: todotype[] = res.data;
+        settask(fetchedData);
         console.log("fetched data is ", fetchedData);
       } catch (err) {
         console.log(`couldnt fetch todos ${err}`);
@@ -42,6 +51,9 @@ function Homepage() {
     }
     fetchdata();
   }, []);
+  useEffect(() => {
+    console.log("data fetched and stored is ", task);
+  }, [task]);
   return (
     <div className=" h-screen">
       <div className="flex justify-end-safe ">
