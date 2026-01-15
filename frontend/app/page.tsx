@@ -110,18 +110,20 @@ function Homepage() {
         </form>
       </div>
 
-      {/* {task && (
+      {task && (
         <div>
           {task.map((currenttask, index, arr) => {
             return (
-              <div>
+              <div key={currenttask.id} className="border-2 border-amber-500">
                 <p>{currenttask.task}</p>
-                <p>{(currenttask.dateAndTime)}</p>
+                <p>{currenttask.date}</p>
+                <p>{currenttask.time}</p>
+                <p> {currenttask.completed ? "completed" : "not completed"}</p>
               </div>
             );
           })}
         </div>
-      )} */}
+      )}
     </div>
   );
 }
