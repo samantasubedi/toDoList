@@ -6,10 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import axios from "axios";
-type todotype = {
+type fetchedDataType = {
   id: number | null;
   task: string;
   dateAndTime: string;
+  completed: boolean;
+};
+type todotype = {
+  id: number | null;
+  task: string;
+  date: string;
+  time: string;
   completed: boolean;
 };
 function Homepage() {
@@ -42,8 +49,23 @@ function Homepage() {
     async function fetchdata() {
       try {
         let res = await axios.get("http://localhost:3307/api/routes");
-        let fetchedData: todotype[] = res.data;
-        settask(fetchedData);
+        let fetchedData: fetchedDataType[] = res.data;
+        let todos = fetchedData.map((curr, i, arr) => {
+          const dateobj = new Date(curr.dateAndTime);
+          const date = dateobj.toLocaleDateString();
+          const time = dateobj.toLocaleTimeString();
+          const id = curr.id;
+          const task = curr.task;
+          const completed = curr.completed;
+          return {
+            id,
+            task,
+            date,
+            time,
+            completed,
+          };
+        });
+        settask(todos);
         console.log("fetched data is ", fetchedData);
       } catch (err) {
         console.log(`couldnt fetch todos ${err}`);
@@ -52,7 +74,7 @@ function Homepage() {
     fetchdata();
   }, []);
   useEffect(() => {
-    console.log("data fetched and stored is ", task);
+    console.log("data stored is ", task);
   }, [task]);
   return (
     <div className=" h-screen">
@@ -87,6 +109,19 @@ function Homepage() {
           </Button>
         </form>
       </div>
+
+      {/* {task && (
+        <div>
+          {task.map((currenttask, index, arr) => {
+            return (
+              <div>
+                <p>{currenttask.task}</p>
+                <p>{(currenttask.dateAndTime)}</p>
+              </div>
+            );
+          })}
+        </div>
+      )} */}
     </div>
   );
 }
