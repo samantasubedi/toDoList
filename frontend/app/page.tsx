@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 type fetchedDataType = {
   id: number | null;
   task: string;
@@ -22,8 +23,8 @@ type todotype = {
 function Homepage() {
   const { theme, setTheme } = useTheme();
   const [input, setinput] = useState<string>("");
-  const [task, settask] = useState<todotype[]>([]);
-  const [added,setadded]=useState<boolean>(false)
+  // const [task, settask] = useState<todotype[]>([]);
+ 
 
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const data = e.target.value;
@@ -36,7 +37,7 @@ function Homepage() {
       return;
     }
     setinput("");
-    setadded(true)
+   
 
     try {
       await axios.post("http://localhost:3307/api/routes", {
@@ -47,37 +48,34 @@ function Homepage() {
       console.log(`cannot insert data into the database, ${err}`);
     }
   };
-  useEffect(() => {
-    async function fetchdata() {
-      try {
-        let res = await axios.get("http://localhost:3307/api/routes");
-        let fetchedData: fetchedDataType[] = res.data;
-        let todos = fetchedData.map((curr, i, arr) => {
-          const dateobj = new Date(curr.dateAndTime);
-          const date = dateobj.toLocaleDateString();
-          const time = dateobj.toLocaleTimeString();
-          const id = curr.id;
-          const task = curr.task;
-          const completed = curr.completed;
-          return {
-            id,
-            task,
-            date,
-            time,
-            completed,
-          };
-        });
-        settask(todos);
-        console.log("fetched data is ", fetchedData);
-      } catch (err) {
-        console.log(`couldnt fetch todos ${err}`);
-      }
+  async function fetchdata() {
+    try {
+      let res = await axios.get("http://localhost:3307/api/routes");
+      let fetchedData: fetchedDataType[] = res.data;
+      let todos = fetchedData.map((curr, i, arr) => {
+        const dateobj = new Date(curr.dateAndTime);
+        const date = dateobj.toLocaleDateString();
+        const time = dateobj.toLocaleTimeString();
+        const id = curr.id;
+        const task = curr.task;
+        const completed = curr.completed;
+        return {
+          id,
+          task,
+          date,
+          time,
+          completed,
+        };
+      });
+      console.log("fetched data is ", fetchedData);
+     return todos
+    } catch (err) {
+      console.log(`couldnt fetch todos ${err}`);
     }
-    fetchdata();
-  }, [added]);
-  useEffect(() => {
-    console.log("data stored is ", task);
-  }, [task]);
+  }
+ const query=useQuery({queryKey:["todoData"],queryFn:fetchdata})
+  
+
   return (
     <div className=" h-screen">
       <div className="flex justify-end-safe ">
@@ -112,9 +110,9 @@ function Homepage() {
         </form>
       </div>
 
-      {task && (
+      {query.data && (
         <div className="flex flex-col gap-10 mt-10 mr-5 ml-5 items-center">
-          {task.map((currenttask, index, arr) => {
+          {query.data.map((currenttask, index, arr) => {
             return (
               <div
                 key={currenttask.id}

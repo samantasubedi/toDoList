@@ -3,7 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { ToastContainer } from "react-toastify";
-
+import QueryClientProviderWrapper from "@/components/QueryClientProviderWrapper";
+import {
+  QueryClientProvider,
+  QueryClient,
+  useQueryClient,
+} from "@tanstack/react-query";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,6 +29,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const queryclient = new QueryClient();
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -36,7 +42,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <QueryClientProviderWrapper> {children}</QueryClientProviderWrapper>
         </ThemeProvider>
       </body>
     </html>
