@@ -23,6 +23,7 @@ function Homepage() {
   const { theme, setTheme } = useTheme();
   const [input, setinput] = useState<string>("");
   const [task, settask] = useState<todotype[]>([]);
+  const [added,setadded]=useState<boolean>(false)
 
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const data = e.target.value;
@@ -35,6 +36,7 @@ function Homepage() {
       return;
     }
     setinput("");
+    setadded(true)
 
     try {
       await axios.post("http://localhost:3307/api/routes", {
@@ -72,7 +74,7 @@ function Homepage() {
       }
     }
     fetchdata();
-  }, []);
+  }, [added]);
   useEffect(() => {
     console.log("data stored is ", task);
   }, [task]);
@@ -111,14 +113,25 @@ function Homepage() {
       </div>
 
       {task && (
-        <div>
+        <div className="flex flex-col gap-10 mt-10 mr-5 ml-5 items-center">
           {task.map((currenttask, index, arr) => {
             return (
-              <div key={currenttask.id} className="border-2 border-amber-500">
+              <div
+                key={currenttask.id}
+                className={`border-2 border-amber-400 p-10 w-[50%] ${
+                  currenttask.completed ? "bg-green-200" : ""
+                }`}
+              >
                 <p>{currenttask.task}</p>
                 <p>{currenttask.date}</p>
                 <p>{currenttask.time}</p>
                 <p> {currenttask.completed ? "completed" : "not completed"}</p>
+                <div className="flex gap-5 mt-7">
+                {!currenttask.completed&&<Button className="font-bold bg-yellow-600">
+                  Set as Completed
+                </Button>}
+                  <Button className="bg-red-700 font-bold hover:bg-red-500 border-2 hover:border-red-700 cursor-pointer">Remove</Button>
+                </div>
               </div>
             );
           })}
