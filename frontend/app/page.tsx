@@ -35,14 +35,8 @@ function Homepage() {
     const data = e.target.value;
     setinput(data);
   };
-  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!input.trim()) {
-      toast.error("Enter a task before adding ");
-      return;
-    }
-    setinput("");
 
+  const postapi = async (input: string) => {
     try {
       await axios.post("http://localhost:3307/api/routes", {
         task: input,
@@ -52,6 +46,7 @@ function Homepage() {
       console.log(`cannot insert data into the database, ${err}`);
     }
   };
+
   async function fetchdata() {
     try {
       let res = await axios.get("http://localhost:3307/api/routes");
@@ -77,13 +72,29 @@ function Homepage() {
       console.log(`couldnt fetch todos ${err}`);
     }
   }
-  const query = useQuery({ queryKey: ["todoData"], queryFn: fetchdata });
+
+  const query = useQuery({ queryFn: fetchdata, queryKey: ["todoData"] });
+
   const mutation = useMutation({
-    mutationFn: handleAdd,
+    mutationFn: postapi,
     onSuccess: () => {
       queryclient.invalidateQueries({ queryKey: ["todoData"] });
+      toast.success("Todo task added sucessfully!");
+    },
+    onError: () => {
+      toast.error("Failed to add the data");
     },
   });
+
+  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!input.trim()) {
+      toast.error("Enter a task before adding ");
+      return;
+    }
+    setinput("");
+    mutation.mutate(input);
+  };
 
   return (
     <div className=" h-screen">
@@ -102,7 +113,7 @@ function Homepage() {
         </button>
       </div>
       <div className="flex justify-center ">
-        <form onSubmit={mutation.mutate}>
+        <form onSubmit={handleAdd}>
           <Input
             placeholder="Add a Task"
             type="text"
