@@ -75,7 +75,7 @@ function Homepage() {
 
   const query = useQuery({ queryFn: fetchdata, queryKey: ["todoData"] });
 
-  const mutation = useMutation({
+  const addMutation = useMutation({
     mutationFn: postapi,
     onSuccess: () => {
       queryclient.invalidateQueries({ queryKey: ["todoData"] });
@@ -93,8 +93,27 @@ function Homepage() {
       return;
     }
     setinput("");
-    mutation.mutate(input);
+    addMutation.mutate(input);
   };
+
+  const deleteTodo = async (id: number | null) => {
+    try {
+      await axios.delete("http://localhost:3307/api/routes", { data: { id } });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const deleteMutation = useMutation({
+    mutationFn: deleteTodo,
+
+    onSuccess: () => {
+      queryclient.invalidateQueries({ queryKey: ["todoData"] });
+      toast.success("todo deleted sucessfully");
+    },
+    onError: () => {
+      toast.error("Failed to delete the todo task");
+    },
+  });
 
   return (
     <div className=" h-screen">
@@ -150,7 +169,12 @@ function Homepage() {
                       Set as Completed
                     </Button>
                   )}
-                  <Button className="bg-red-700 font-bold hover:bg-red-500 border-2 hover:border-red-700 cursor-pointer">
+                  <Button
+                    onClick={() => {
+                      deleteMutation.mutate(currenttask.id);
+                    }}
+                    className="bg-red-700 font-bold hover:bg-red-500 border-2 hover:border-red-700 cursor-pointer"
+                  >
                     Remove
                   </Button>
                 </div>
