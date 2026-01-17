@@ -6,7 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 type fetchedDataType = {
   id: number | null;
   task: string;
@@ -24,7 +29,7 @@ function Homepage() {
   const { theme, setTheme } = useTheme();
   const [input, setinput] = useState<string>("");
   // const [task, settask] = useState<todotype[]>([]);
- 
+  const queryclient = useQueryClient();
 
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const data = e.target.value;
@@ -37,7 +42,6 @@ function Homepage() {
       return;
     }
     setinput("");
-   
 
     try {
       await axios.post("http://localhost:3307/api/routes", {
@@ -68,13 +72,18 @@ function Homepage() {
         };
       });
       console.log("fetched data is ", fetchedData);
-     return todos
+      return todos;
     } catch (err) {
       console.log(`couldnt fetch todos ${err}`);
     }
   }
- const query=useQuery({queryKey:["todoData"],queryFn:fetchdata})
-  
+  const query = useQuery({ queryKey: ["todoData"], queryFn: fetchdata });
+  const mutation = useMutation({
+    mutationFn: handleAdd,
+    onSuccess: () => {
+      queryclient.invalidateQueries({ queryKey: ["todoData"] });
+    },
+  });
 
   return (
     <div className=" h-screen">
@@ -93,7 +102,7 @@ function Homepage() {
         </button>
       </div>
       <div className="flex justify-center ">
-        <form onSubmit={handleAdd}>
+        <form onSubmit={mutation.mutate}>
           <Input
             placeholder="Add a Task"
             type="text"
@@ -125,10 +134,14 @@ function Homepage() {
                 <p>{currenttask.time}</p>
                 <p> {currenttask.completed ? "completed" : "not completed"}</p>
                 <div className="flex gap-5 mt-7">
-                {!currenttask.completed&&<Button className="font-bold bg-yellow-600">
-                  Set as Completed
-                </Button>}
-                  <Button className="bg-red-700 font-bold hover:bg-red-500 border-2 hover:border-red-700 cursor-pointer">Remove</Button>
+                  {!currenttask.completed && (
+                    <Button className="font-bold bg-yellow-600">
+                      Set as Completed
+                    </Button>
+                  )}
+                  <Button className="bg-red-700 font-bold hover:bg-red-500 border-2 hover:border-red-700 cursor-pointer">
+                    Remove
+                  </Button>
                 </div>
               </div>
             );

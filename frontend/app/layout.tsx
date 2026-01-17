@@ -29,7 +29,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const queryclient = new QueryClient();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
