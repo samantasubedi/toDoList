@@ -141,7 +141,7 @@ function Homepage() {
   };
 
   return (
-    <div className=" h-screen">
+    <div className=" h-screen  dark:bg-black">
       <div className="flex justify-end-safe ">
         <button
           className="cursor-pointer text-3xl mr-5"
@@ -150,21 +150,23 @@ function Homepage() {
           }}
         >
           {theme == "dark" ? (
-            <Icon icon="line-md:moon-rising-alt-loop" className="text-blue-500" />
+            <Icon
+              icon="line-md:moon-rising-alt-loop"
+              className="text-blue-500"
+            />
           ) : (
-            <Icon icon="line-md:sun-rising-loop" className="text-orange-700"/>
+            <Icon icon="line-md:sun-rising-loop" className="text-orange-700" />
           )}
         </button>
       </div>
       <div className="flex justify-center ">
         <form onSubmit={handleAdd}>
           <Input
-        
             placeholder="Add a Task"
             type="text"
             onChange={handleinputchange}
             value={input}
-            className="w-100 border-2 border-gray-400 text-neutral-600 text-xl! h-10 dark:text-white "
+            className="w-100 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white "
           />
           <Button
             type="submit"
@@ -181,34 +183,57 @@ function Homepage() {
             return (
               <div
                 key={currenttask.id}
-                className={`border-2 border-amber-400 p-10 w-[50%] ${
-                  currenttask.completed ? "bg-green-200" : ""
+                className={` dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit bg-linear-to-l from-teal-50 to-teal-100  rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200  ${
+                  currenttask.completed
+                    ? " border-l-green-400 dark:border-l-green-800"
+                    : ""
                 }`}
               >
-                <p>{currenttask.task}</p>
-                <p>{currenttask.date}</p>
-                <p>{currenttask.time}</p>
-                <p> {currenttask.completed ? "completed" : "not completed"}</p>
-                <div className="flex gap-5 mt-7">
-                  {!currenttask.completed && (
+                <div className="flex justify-between gap-5">
+                  <p className=" p-5 w-[90%] rounded-xl font-semibold text-xl text-fuchsia-900 dark:text-white">
+                    {currenttask.task}
+                  </p>
+                  <div className="flex gap-10 border-b-2 border-t-2 px-6 border-teal-300 dark:bg-gray-800 bg-white rounded-4xl">
+                    {!currenttask.completed && (
+                      <button
+                        onClick={() => {
+                          handlePatch(currenttask.id);
+                        }}
+                      >
+                        <Icon
+                          icon="octicon:tracked-by-closed-completed-16"
+                          className="text-amber-500 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-amber-400"
+                        />
+                      </button>
+                    )}
                     <button
                       onClick={() => {
-                        handlePatch(currenttask.id);
+                        deleteMutation.mutate(currenttask.id);
                       }}
-                      
                     >
-                     <Icon icon="octicon:tracked-by-closed-completed-16" className="text-3xl text-amber-900 " />
+                      <Icon
+                        icon="material-symbols:delete"
+                        className="text-red-700 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-red-500"
+                      />
                     </button>
-                  )}
-                  <button
-                
-                    onClick={() => {
-                      deleteMutation.mutate(currenttask.id);
-                    }}
-                   
-                  >
-                <Icon icon="material-symbols:delete"  className="text-red-700 text-3xl hover:text-4xl transition-all duration-200 cursor-pointer hover:text-red-500"/>
-                  </button>
+                  </div>
+                </div>
+                <div className="flex  bg-white justify-between px-10 mt-3">
+                  <div className="flex gap-2">
+                    <Icon
+                      icon="clarity:date-solid-badged"
+                      className="text-lg"
+                    />
+                    <p className=" font-semibold text-gray-500 text-md">
+                      {currenttask.date}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Icon icon="carbon:time-filled" className="text-lg" />
+                    <p className=" font-semibold text-md text-gray-500">
+                      {currenttask.time}
+                    </p>
+                  </div>
                 </div>
               </div>
             );
