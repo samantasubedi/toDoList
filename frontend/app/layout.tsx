@@ -35,7 +35,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ToastContainer position="top-right" />
+        <ToastContainer position="top-right" autoClose={1500}/>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

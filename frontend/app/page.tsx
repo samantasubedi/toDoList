@@ -36,17 +36,6 @@ function Homepage() {
     setinput(data);
   };
 
-  const postapi = async (input: string) => {
-    try {
-      await axios.post("http://localhost:3307/api/routes", {
-        task: input,
-        completed: false,
-      });
-    } catch (err) {
-      console.log(`cannot insert data into the database, ${err}`);
-    }
-  };
-
   async function fetchdata() {
     try {
       let res = await axios.get("http://localhost:3307/api/routes");
@@ -73,6 +62,33 @@ function Homepage() {
     }
   }
 
+  const postapi = async (input: string) => {
+    try {
+      await axios.post("http://localhost:3307/api/routes", {
+        task: input,
+        completed: false,
+      });
+    } catch (err) {
+      console.log(`cannot insert data into the database, ${err}`);
+    }
+  };
+
+  const patchtodo = async (id: number | null) => {
+    try {
+      axios.patch("http://localhost:3307/api/routes", { id: id });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteTodo = async (id: number | null) => {
+    try {
+      await axios.delete("http://localhost:3307/api/routes", { data: { id } });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const query = useQuery({ queryFn: fetchdata, queryKey: ["todoData"] });
 
   const addMutation = useMutation({
@@ -86,23 +102,6 @@ function Homepage() {
     },
   });
 
-  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!input.trim()) {
-      toast.error("Enter a task before adding ");
-      return;
-    }
-    setinput("");
-    addMutation.mutate(input);
-  };
-
-  const deleteTodo = async (id: number | null) => {
-    try {
-      await axios.delete("http://localhost:3307/api/routes", { data: { id } });
-    } catch (err) {
-      console.log(err);
-    }
-  };
   const deleteMutation = useMutation({
     mutationFn: deleteTodo,
 
@@ -114,6 +113,31 @@ function Homepage() {
       toast.error("Failed to delete the todo task");
     },
   });
+
+  const patchmutation = useMutation({
+    mutationFn: patchtodo,
+    onSuccess: () => {
+      queryclient.invalidateQueries({ queryKey: ["todoData"] });
+      toast.success("Task set as completed");
+    },
+    onError: () => {
+      toast.error("failed to update state");
+    },
+  });
+
+  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!input.trim()) {
+      toast.error("Enter a task before adding ");
+      return;
+    }
+    setinput("");
+    addMutation.mutate(input);
+  };
+
+  const handlePatch = (id: number | null) => {
+    patchmutation.mutate(id);
+  };
 
   return (
     <div className=" h-screen">
@@ -165,7 +189,12 @@ function Homepage() {
                 <p> {currenttask.completed ? "completed" : "not completed"}</p>
                 <div className="flex gap-5 mt-7">
                   {!currenttask.completed && (
-                    <Button className="font-bold bg-yellow-600">
+                    <Button
+                      onClick={() => {
+                        handlePatch(currenttask.id);
+                      }}
+                      className="font-bold bg-amber-600 hover:bg-amber-400 cursor-pointer border-2 border-transparent hover:border-amber-600"
+                    >
                       Set as Completed
                     </Button>
                   )}
@@ -173,7 +202,7 @@ function Homepage() {
                     onClick={() => {
                       deleteMutation.mutate(currenttask.id);
                     }}
-                    className="bg-red-700 font-bold hover:bg-red-500 border-2 hover:border-red-700 cursor-pointer"
+                    className="bg-red-700 font-bold hover:bg-red-500 border-2 hover:border-red-700 cursor-pointer border-transparent"
                   >
                     Remove
                   </Button>
