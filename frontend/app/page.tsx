@@ -59,6 +59,7 @@ function Homepage() {
       return todos;
     } catch (err) {
       console.log(`couldnt fetch todos ${err}`);
+      return [];
     }
   }
 
@@ -149,20 +150,21 @@ function Homepage() {
           }}
         >
           {theme == "dark" ? (
-            <Icon icon="line-md:moon-rising-alt-loop" />
+            <Icon icon="line-md:moon-rising-alt-loop" className="text-blue-500" />
           ) : (
-            <Icon icon="line-md:sun-rising-loop" />
+            <Icon icon="line-md:sun-rising-loop" className="text-orange-700"/>
           )}
         </button>
       </div>
       <div className="flex justify-center ">
         <form onSubmit={handleAdd}>
           <Input
+        
             placeholder="Add a Task"
             type="text"
             onChange={handleinputchange}
             value={input}
-            className="w-100"
+            className="w-100 border-2 border-gray-400 text-neutral-600 text-xl! h-10 dark:text-white "
           />
           <Button
             type="submit"
@@ -189,23 +191,24 @@ function Homepage() {
                 <p> {currenttask.completed ? "completed" : "not completed"}</p>
                 <div className="flex gap-5 mt-7">
                   {!currenttask.completed && (
-                    <Button
+                    <button
                       onClick={() => {
                         handlePatch(currenttask.id);
                       }}
-                      className="font-bold bg-amber-600 hover:bg-amber-400 cursor-pointer border-2 border-transparent hover:border-amber-600"
+                      
                     >
-                      Set as Completed
-                    </Button>
+                     <Icon icon="octicon:tracked-by-closed-completed-16" className="text-3xl text-amber-900 " />
+                    </button>
                   )}
-                  <Button
+                  <button
+                
                     onClick={() => {
                       deleteMutation.mutate(currenttask.id);
                     }}
-                    className="bg-red-700 font-bold hover:bg-red-500 border-2 hover:border-red-700 cursor-pointer border-transparent"
+                   
                   >
-                    Remove
-                  </Button>
+                <Icon icon="material-symbols:delete"  className="text-red-700 text-3xl hover:text-4xl transition-all duration-200 cursor-pointer hover:text-red-500"/>
+                  </button>
                 </div>
               </div>
             );
