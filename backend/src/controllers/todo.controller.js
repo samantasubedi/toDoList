@@ -25,16 +25,11 @@ export const postTodo = async (req, res) => {
 };
 
 export const patchTodo = async (req, res) => {
-  const completed = req.body.completed;
-
   const id = req.body.id;
 
   try {
     const pool = getDB();
-    await pool.query("UPDATE todos  SET completed=? WHERE id=?", [
-      completed,
-      id,
-    ]);
+    await pool.query("UPDATE todos  SET completed=? WHERE id=?", [true, id]);
   } catch (err) {
     console.log("cannot modify the data", err);
   }
