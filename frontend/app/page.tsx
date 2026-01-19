@@ -193,6 +193,7 @@ const inputrefrence=useRef<HTMLInputElement>(null)
                     : ""
                 }`}
               >
+                <div className="flex justify-end"><Icon icon="bi:three-dots-vertical" className="text-2xl mb-2" /></div>
                 <div className="flex justify-between gap-5">
                   <p
                     className={` p-5 w-[90%] rounded-xl font-semibold text-xl text-fuchsia-900 dark:text-white ${currenttask.completed ? "line-through" : ""}`}
@@ -224,7 +225,7 @@ const inputrefrence=useRef<HTMLInputElement>(null)
                     </button>
                   </div>
                 </div>
-                <div className="flex  bg-white justify-between px-10 mt-3">
+                <div className="flex  bg-white justify-between px-10 mt-3 rounded-2xl dark:bg-gray-950">
                   <div className="flex gap-2">
                     <Icon
                       icon="clarity:date-solid-badged"
