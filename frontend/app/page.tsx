@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
+import Empty from "@/components/ui/Empty";
 import axios from "axios";
 import {
   QueryClient,
@@ -27,6 +28,7 @@ type todotype = {
 };
 function Homepage() {
   const { theme, setTheme } = useTheme();
+  const [focus, setfocus] = useState(false);
   const [input, setinput] = useState<string>("");
   // const [task, settask] = useState<todotype[]>([]);
   const queryclient = useQueryClient();
@@ -140,6 +142,8 @@ function Homepage() {
     patchmutation.mutate(id);
   };
 
+  const focusfn = () => {};
+
   return (
     <div className=" h-screen  dark:bg-black">
       <div className="flex justify-end-safe ">
@@ -166,11 +170,11 @@ function Homepage() {
             type="text"
             onChange={handleinputchange}
             value={input}
-            className="w-100 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white "
+            className="w-150 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white "
           />
           <Button
             type="submit"
-            className="ml-6 bg-teal-700 dark:text-white font-semibold  hover:bg-teal-500 transition-colors duration-300 ease-in-out cursor-pointer"
+            className="ml-6 bg-teal-700 dark:text-white font-semibold text-2xl h-13  hover:bg-teal-500 transition-colors duration-300 ease-in-out cursor-pointer"
           >
             ADD
           </Button>
@@ -190,7 +194,9 @@ function Homepage() {
                 }`}
               >
                 <div className="flex justify-between gap-5">
-                  <p className=" p-5 w-[90%] rounded-xl font-semibold text-xl text-fuchsia-900 dark:text-white">
+                  <p
+                    className={` p-5 w-[90%] rounded-xl font-semibold text-xl text-fuchsia-900 dark:text-white ${currenttask.completed ? "line-through" : ""}`}
+                  >
                     {currenttask.task}
                   </p>
                   <div className="flex gap-10 border-b-2 border-t-2 px-6 border-teal-300 dark:bg-gray-800 bg-white rounded-4xl">
@@ -240,6 +246,7 @@ function Homepage() {
           })}
         </div>
       )}
+      {query.data?.length == 0 && <Empty activate={setfocus} />}
     </div>
   );
 }
