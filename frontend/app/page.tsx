@@ -142,9 +142,7 @@ function Homepage() {
     patchmutation.mutate(id);
   };
 const inputrefrence=useRef<HTMLInputElement>(null)
-if(focus){
-  inputrefrence.current?.focus()
-}
+
   return (
     <div className=" h-screen  dark:bg-black">
       <div className="flex justify-end-safe ">
@@ -248,7 +246,7 @@ if(focus){
           })}
         </div>
       )}
-      {query.data?.length == 0 && <Empty activate={setfocus} />}
+      {query.data?.length == 0 && <Empty inputrefrence={inputrefrence} />}
     </div>
   );
 }
