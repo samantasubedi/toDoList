@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { Icon } from "@iconify/react";
 import { Input } from "@/components/ui/input";
@@ -141,9 +141,10 @@ function Homepage() {
   const handlePatch = (id: number | null) => {
     patchmutation.mutate(id);
   };
-
-  const focusfn = () => {};
-
+const inputrefrence=useRef<HTMLInputElement>(null)
+if(focus){
+  inputrefrence.current?.focus()
+}
   return (
     <div className=" h-screen  dark:bg-black">
       <div className="flex justify-end-safe ">
@@ -166,11 +167,12 @@ function Homepage() {
       <div className="flex justify-center ">
         <form onSubmit={handleAdd}>
           <Input
+          ref={inputrefrence}
             placeholder="Add a Task"
             type="text"
             onChange={handleinputchange}
             value={input}
-            className="w-150 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white "
+            className={`w-150 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white ${focus?"":""}`}
           />
           <Button
             type="submit"
