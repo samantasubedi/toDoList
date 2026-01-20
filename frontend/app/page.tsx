@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import Empty from "@/components/ui/Empty";
 import axios from "axios";
+import { Dropdown } from "@/components/ui/Dropdown";
 import {
   QueryClient,
   useMutation,
@@ -44,8 +45,12 @@ function Homepage() {
       let fetchedData: fetchedDataType[] = res.data;
       let todos = fetchedData.map((curr, i, arr) => {
         const dateobj = new Date(curr.dateAndTime);
-        const date = dateobj.toLocaleDateString();
-        const time = dateobj.toLocaleTimeString();
+        const date = dateobj.toLocaleDateString("en-US", {
+          timeZone: "Asia/Kathmandu",
+        });
+        const time = dateobj.toLocaleTimeString("en-US", {
+          timeZone: "Asia/Kathmandu",
+        });
         const id = curr.id;
         const task = curr.task;
         const completed = curr.completed;
@@ -141,7 +146,8 @@ function Homepage() {
   const handlePatch = (id: number | null) => {
     patchmutation.mutate(id);
   };
-const inputrefrence=useRef<HTMLInputElement>(null)
+  const inputrefrence = useRef<HTMLInputElement>(null);
+  const [showdropdown,setshowdropdown]=useState(false)
 
   return (
     <div className=" h-screen  dark:bg-black">
@@ -165,12 +171,12 @@ const inputrefrence=useRef<HTMLInputElement>(null)
       <div className="flex justify-center ">
         <form onSubmit={handleAdd}>
           <Input
-          ref={inputrefrence}
+            ref={inputrefrence}
             placeholder="Add a Task"
             type="text"
             onChange={handleinputchange}
             value={input}
-            className={`w-150 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white ${focus?"":""}`}
+            className={`w-150 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white ${focus ? "" : ""}`}
           />
           <Button
             type="submit"
@@ -193,27 +199,40 @@ const inputrefrence=useRef<HTMLInputElement>(null)
                     : ""
                 }`}
               >
-                <div className="flex justify-end"><Icon icon="bi:three-dots-vertical" className="text-2xl mb-2" /></div>
+                <div className="flex justify-end">
+                 
+                    <button title="Options"
+                    onClick={()=>{setshowdropdown(!showdropdown)}}>
+                      <Icon
+                        icon="bi:three-dots-vertical"
+                        className="text-2xl mb-2"
+                      />
+                    </button>
+                    {showdropdown && <Dropdown/>}
+                 
+                </div>
                 <div className="flex justify-between gap-5">
                   <p
                     className={` p-5 w-[90%] rounded-xl font-semibold text-xl text-fuchsia-900 dark:text-white ${currenttask.completed ? "line-through" : ""}`}
                   >
                     {currenttask.task}
                   </p>
-                  <div className="flex gap-10 border-b-2 border-t-2 px-6 border-teal-300 dark:bg-gray-800 bg-white rounded-4xl">
+                  <div className="flex gap-10 border-b-2 border-t-2 px-6 border-teal-300 dark:bg-gray-950 bg-white rounded-4xl">
                     {!currenttask.completed && (
                       <button
+                        title="Set this task as completed"
                         onClick={() => {
                           handlePatch(currenttask.id);
                         }}
                       >
                         <Icon
                           icon="octicon:tracked-by-closed-completed-16"
-                          className="text-amber-500 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-amber-400"
+                          className="text-orange-500 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-amber-500"
                         />
                       </button>
                     )}
                     <button
+                      title="Delete this task"
                       onClick={() => {
                         deleteMutation.mutate(currenttask.id);
                       }}
