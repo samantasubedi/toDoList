@@ -193,9 +193,9 @@ function Homepage() {
             return (
               <div
                 key={currenttask.id}
-                className={`${priority=="high"?"bg-linear-to-l from-red-100 to-red-300":priority=="medium"?"bg-linear-to-l from-amber-100 to-amber-200":"bg-linear-to-l from-teal-50 to-teal-100"} dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit   rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200  ${
+                className={`  ${priority=="high"?"bg-linear-to-l from-red-100 to-red-300 dark:border-t-2 dark:border-b-2 dark:border-r-2 dark:border-r-red-400 dark:border-t-red-400 dark:border-b-red-400":priority=="medium"?"bg-linear-to-l from-amber-100 to-amber-200 dark:border-t-2 dark:border-b-2 dark:border-r-2 dark:border-r-yellow-400 dark:border-t-yellow-400 dark:border-b-yellow-400":"bg-linear-to-l from-teal-50 to-teal-100 dark:border-t-2 dark:border-b-2 dark:border-r-2 dark:border-r-green-400 dark:border-t-green-400 dark:border-b-green-400"} dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit    rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200  ${
                   currenttask.completed
-                    ? " border-l-green-400 dark:border-l-green-800"
+                    ? " border-l-green-400 dark:border-l-emerald-700"
                     : ""
                 }`}
               >
