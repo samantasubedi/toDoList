@@ -22,7 +22,8 @@ export const Dropdown = ({ priorityfn, dropdown }: proptype) => {
           <div className="flex flex-col gap-2 bg-blue-200 p-2 rounded-b-xl">
             <button
               onClick={() => {
-                priorityfn("high");
+                priorityfn("high")
+                dropdown(false);
               }}
               className="bg-red-400 text-white rounded-md font-semibold"
             >
@@ -30,7 +31,8 @@ export const Dropdown = ({ priorityfn, dropdown }: proptype) => {
             </button>
             <button
               onClick={() => {
-                priorityfn("medium");
+                priorityfn("medium")
+                dropdown(false);
               }}
               className="bg-amber-400 text-white rounded-md font-semibold"
             >
@@ -38,7 +40,8 @@ export const Dropdown = ({ priorityfn, dropdown }: proptype) => {
             </button>
             <button
               onClick={() => {
-                priorityfn("low");
+                priorityfn("low")
+                dropdown(false);
               }}
               className="bg-emerald-400 text-white rounded-md font-semibold"
             >
