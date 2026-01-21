@@ -31,7 +31,6 @@ function Homepage() {
   const { theme, setTheme } = useTheme();
   const [focus, setfocus] = useState(false);
   const [input, setinput] = useState<string>("");
-  // const [task, settask] = useState<todotype[]>([]);
   const queryclient = useQueryClient();
 
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,6 +147,7 @@ function Homepage() {
   };
   const inputrefrence = useRef<HTMLInputElement>(null);
   const [showdropdown,setshowdropdown]=useState(false)
+  const [priority,setpriority]=useState("")
 
   return (
     <div className=" h-screen  dark:bg-black">
@@ -193,7 +193,7 @@ function Homepage() {
             return (
               <div
                 key={currenttask.id}
-                className={` dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit bg-linear-to-l from-teal-50 to-teal-100  rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200  ${
+                className={`${priority=="high"?"bg-linear-to-l from-red-100 to-red-300":priority=="medium"?"bg-linear-to-l from-amber-100 to-amber-200":"bg-linear-to-l from-teal-50 to-teal-100"} dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit   rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200  ${
                   currenttask.completed
                     ? " border-l-green-400 dark:border-l-green-800"
                     : ""
@@ -208,7 +208,7 @@ function Homepage() {
                         className="text-2xl mb-2"
                       />
                     </button>
-                    {showdropdown && <Dropdown/>}
+                    {showdropdown && <Dropdown priorityfn={setpriority} dropdown={setshowdropdown}/>}
                  
                 </div>
                 <div className="flex justify-between gap-5">
