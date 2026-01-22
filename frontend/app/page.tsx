@@ -86,7 +86,7 @@ function Homepage() {
 
   const patchtodo = async (id: number | null) => {
     try {
-      axios.patch("http://localhost:3307/api/routes", { id: id });
+      await axios.patch("http://localhost:3307/api/routes", { id: id });
     } catch (err) {
       console.log(err);
     }
@@ -105,7 +105,7 @@ function Homepage() {
   const addMutation = useMutation({
     mutationFn: postapi,
     onSuccess: () => {
-      queryclient.invalidateQueries({ queryKey: ["todoData"] });
+      query.refetch();
       toast.success("Todo task added sucessfully!");
     },
     onError: () => {
@@ -115,9 +115,8 @@ function Homepage() {
 
   const deleteMutation = useMutation({
     mutationFn: deleteTodo,
-
     onSuccess: () => {
-      queryclient.invalidateQueries({ queryKey: ["todoData"] });
+      query.refetch();
       toast.success("todo deleted sucessfully");
     },
     onError: () => {
@@ -151,6 +150,10 @@ function Homepage() {
   };
   const inputrefrence = useRef<HTMLInputElement>(null);
   const [showdropdown, setshowdropdown] = useState(false);
+  const [ids, setids] = useState<{
+    editid: number | null;
+    deleteid: number | null;
+  }>({ editid: null, deleteid: null });
   const [priorityObj, setpriorityObj] = useState<{
     priority: string;
     id: number | null;
@@ -246,23 +249,40 @@ function Homepage() {
                         title="Set this task as completed"
                         onClick={() => {
                           handlePatch(currenttask.id);
+                          setids({ editid: currenttask.id, deleteid: null });
                         }}
                       >
                         <Icon
-                          icon="octicon:tracked-by-closed-completed-16"
-                          className="text-orange-500 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-amber-500"
+                          icon={
+                            patchmutation.isPending &&
+                            currenttask.id == ids.editid
+                              ? "codex:loader"
+                              : "octicon:tracked-by-closed-completed-16"
+                          }
+                          className={cn(
+                            "text-orange-500 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-amber-500",
+                          )}
                         />
                       </button>
                     )}
                     <button
                       title="Delete this task"
+                      disabled={deleteMutation.isPending}
                       onClick={() => {
+                        setids({ editid: null, deleteid: currenttask.id });
                         deleteMutation.mutate(currenttask.id);
                       }}
                     >
                       <Icon
-                        icon="material-symbols:delete"
-                        className="text-red-700 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-red-500"
+                        icon={
+                          deleteMutation.isPending &&
+                          ids.deleteid == currenttask.id
+                            ? "codex:loader"
+                            : "material-symbols:delete"
+                        }
+                        className={cn(
+                          "text-red-700 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-red-500",
+                        )}
                       />
                     </button>
                   </div>
@@ -279,7 +299,9 @@ function Homepage() {
                   </div>
                   <div className="flex gap-2">
                     <Icon icon="carbon:time-filled" className="text-lg" />
-                    <p className=" font-semibold text-md text-gray-500">{moment(currenttask.date).format("hh-mm a")}</p>
+                    <p className=" font-semibold text-md text-gray-500">
+                      {moment(currenttask.date).format("hh-mm a")}
+                    </p>
                   </div>
                 </div>
               </div>
