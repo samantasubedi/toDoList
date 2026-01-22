@@ -6,7 +6,7 @@ const createTable = async () => {
   const query = `CREATE TABLE todos(
  id INT AUTO_INCREMENT PRIMARY KEY,
  task VARCHAR(255) NOT NULL,
- dateAndTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ dateAndTime VARCHAR(255) NOT NULL,
  completed BOOLEAN DEFAULT FALSE
  )`;
   await pool.query(query);

@@ -8,12 +8,14 @@ import { toast } from "react-toastify";
 import Empty from "@/components/ui/Empty";
 import axios from "axios";
 import { Dropdown } from "@/components/ui/Dropdown";
+import moment from "moment-timezone";
 import {
   QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { cn } from "@/lib/utils";
 type fetchedDataType = {
   id: number | null;
   task: string;
@@ -38,18 +40,20 @@ function Homepage() {
     setinput(data);
   };
 
+  const classNames = {
+    high: "bg-linear-to-l from-red-100 to-red-300 dark:border-t-2 dark:border-b-2 dark:border-r-2 dark:border-r-red-400 dark:border-t-red-400 dark:border-b-red-400",
+    medium:
+      "bg-linear-to-l from-amber-100 to-amber-200 dark:border-t-2 dark:border-b-2 dark:border-r-2 dark:border-r-yellow-400 dark:border-t-yellow-400 dark:border-b-yellow-400",
+    low: "bg-linear-to-l from-teal-100 to-teal-200 dark:border-t-2 dark:border-b-2 dark:border-r-2 dark:border-r-green-400 dark:border-t-green-400 dark:border-b-green-400",
+  };
+
   async function fetchdata() {
     try {
       let res = await axios.get("http://localhost:3307/api/routes");
       let fetchedData: fetchedDataType[] = res.data;
       let todos = fetchedData.map((curr, i, arr) => {
-        const dateobj = new Date(curr.dateAndTime);
-        const date = dateobj.toLocaleDateString("en-US", {
-          timeZone: "Asia/Kathmandu",
-        });
-        const time = dateobj.toLocaleTimeString("en-US", {
-          timeZone: "Asia/Kathmandu",
-        });
+        const dateobj = curr.dateAndTime;
+        const date = dateobj;
         const id = curr.id;
         const task = curr.task;
         const completed = curr.completed;
@@ -57,7 +61,6 @@ function Homepage() {
           id,
           task,
           date,
-          time,
           completed,
         };
       });
@@ -74,6 +77,7 @@ function Homepage() {
       await axios.post("http://localhost:3307/api/routes", {
         task: input,
         completed: false,
+        dateAndTime: new Date(),
       });
     } catch (err) {
       console.log(`cannot insert data into the database, ${err}`);
@@ -146,9 +150,11 @@ function Homepage() {
     patchmutation.mutate(id);
   };
   const inputrefrence = useRef<HTMLInputElement>(null);
-  const [showdropdown,setshowdropdown]=useState(false)
-  const [priority,setpriority]=useState("")
-
+  const [showdropdown, setshowdropdown] = useState(false);
+  const [priorityObj, setpriorityObj] = useState<{
+    priority: string;
+    id: number | null;
+  }>({ priority: "", id: null });
   return (
     <div className=" h-screen  dark:bg-black">
       <div className="flex justify-end-safe ">
@@ -193,23 +199,40 @@ function Homepage() {
             return (
               <div
                 key={currenttask.id}
-                className={`  ${priority=="high"?"bg-linear-to-l from-red-100 to-red-300 dark:border-t-2 dark:border-b-2 dark:border-r-2 dark:border-r-red-400 dark:border-t-red-400 dark:border-b-red-400":priority=="medium"?"bg-linear-to-l from-amber-100 to-amber-200 dark:border-t-2 dark:border-b-2 dark:border-r-2 dark:border-r-yellow-400 dark:border-t-yellow-400 dark:border-b-yellow-400":"bg-linear-to-l from-teal-50 to-teal-100 dark:border-t-2 dark:border-b-2 dark:border-r-2 dark:border-r-green-400 dark:border-t-green-400 dark:border-b-green-400"} dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit    rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200  ${
-                  currenttask.completed
-                    ? " border-l-green-400 dark:border-l-emerald-700"
-                    : ""
-                }`}
+                className={cn(
+                  `bg-linear-to-l from-green-100 to-green-200  dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit    rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200 `,
+                  currenttask.completed &&
+                    "border-l-green-400 dark:border-l-emerald-700",
+                  priorityObj.priority == "high" &&
+                    priorityObj.id == currenttask.id &&
+                    classNames.high,
+                  priorityObj.priority == "medium" &&
+                    priorityObj.id == currenttask.id &&
+                    classNames.medium,
+                  priorityObj.priority == "low" &&
+                    priorityObj.id == currenttask.id &&
+                    classNames.low,
+                )}
               >
                 <div className="flex justify-end">
-                 
-                    <button title="Options"
-                    onClick={()=>{setshowdropdown(!showdropdown)}}>
-                      <Icon
-                        icon="bi:three-dots-vertical"
-                        className="text-2xl mb-2"
-                      />
-                    </button>
-                    {showdropdown && <Dropdown priorityfn={setpriority} dropdown={setshowdropdown}/>}
-                 
+                  <button
+                    title="Options"
+                    onClick={() => {
+                      setshowdropdown(!showdropdown);
+                    }}
+                  >
+                    <Icon
+                      icon="bi:three-dots-vertical"
+                      className="text-2xl mb-2"
+                    />
+                  </button>
+                  {showdropdown && (
+                    <Dropdown
+                      priorityfn={setpriorityObj}
+                      dropdown={setshowdropdown}
+                      id={currenttask.id}
+                    />
+                  )}
                 </div>
                 <div className="flex justify-between gap-5">
                   <p
@@ -251,14 +274,12 @@ function Homepage() {
                       className="text-lg"
                     />
                     <p className=" font-semibold text-gray-500 text-md">
-                      {currenttask.date}
+                      {moment(currenttask.date).format("YYYY-MM-DD ")}
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <Icon icon="carbon:time-filled" className="text-lg" />
-                    <p className=" font-semibold text-md text-gray-500">
-                      {currenttask.time}
-                    </p>
+                    <p className=" font-semibold text-md text-gray-500">{moment(currenttask.date).format("hh-mm a")}</p>
                   </div>
                 </div>
               </div>
