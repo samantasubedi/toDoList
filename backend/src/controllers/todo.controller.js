@@ -14,7 +14,7 @@ export const postTodo = async (req, res) => {
     const dateAndTime = req.body.dateAndTime;
     const task = req.body.task;
     const completed = req.body.completed;
-    const pool = getDB();
+    const pool = getDB();//its like doing pool=pool as getDB()is a function that returns pool
     await pool.query(
       "INSERT INTO todos (task,completed,dateAndTime) VALUES(?,?,?)",
       [task, completed, dateAndTime],
