@@ -21,6 +21,7 @@ type fetchedDataType = {
   task: string;
   dateAndTime: string;
   completed: boolean;
+  priority: string;
 };
 type todotype = {
   id: number | null;
@@ -57,11 +58,13 @@ function Homepage() {
         const id = curr.id;
         const task = curr.task;
         const completed = curr.completed;
+        const priority = curr.priority;
         return {
           id,
           task,
           date,
           completed,
+          priority,
         };
       });
       console.log("fetched data is ", fetchedData);
@@ -84,9 +87,25 @@ function Homepage() {
     }
   };
 
-  const patchtodo = async (id: number | null) => {
+  const patchcompleted = async (id: number | null) => {
     try {
       await axios.patch("http://localhost:3307/api/routes", { id: id });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const patchpriority = async ({
+    id,
+    priority,
+  }: {
+    id: number | null;
+    priority: string;
+  }) => {
+    try {
+      await axios.patch("http://localhost:3307/api/routes", {
+        id: id,
+        priority: priority,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -124,14 +143,22 @@ function Homepage() {
     },
   });
 
-  const patchmutation = useMutation({
-    mutationFn: patchtodo,
+  const completedmutation = useMutation({
+    mutationFn: patchcompleted,
     onSuccess: () => {
       queryclient.invalidateQueries({ queryKey: ["todoData"] });
       toast.success("Task set as completed");
     },
     onError: () => {
       toast.error("failed to update state");
+    },
+  });
+
+  const prioritymutation = useMutation({
+    mutationFn: patchpriority,
+    onSuccess: () => {
+      query.refetch();
+      toast.success("priority set sucessfully");
     },
   });
 
@@ -145,19 +172,21 @@ function Homepage() {
     addMutation.mutate(input);
   };
 
-  const handlePatch = (id: number | null) => {
-    patchmutation.mutate(id);
+  const handlecompleted = (id: number | null) => {
+    completedmutation.mutate(id);
   };
+
+  const handlepriority = (id: number | null, priority: string) => {
+    prioritymutation.mutate({ id, priority });
+  };
+
   const inputrefrence = useRef<HTMLInputElement>(null);
   const [showdropdown, setshowdropdown] = useState(false);
   const [ids, setids] = useState<{
     editid: number | null;
     deleteid: number | null;
   }>({ editid: null, deleteid: null });
-  const [priorityObj, setpriorityObj] = useState<{
-    priority: string;
-    id: number | null;
-  }>({ priority: "", id: null });
+
   return (
     <div className=" h-screen  dark:bg-black">
       <div className="flex justify-end-safe ">
@@ -206,15 +235,9 @@ function Homepage() {
                   `bg-linear-to-l from-green-100 to-green-200  dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit    rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200 `,
                   currenttask.completed &&
                     "border-l-green-400 dark:border-l-emerald-700",
-                  priorityObj.priority == "high" &&
-                    priorityObj.id == currenttask.id &&
-                    classNames.high,
-                  priorityObj.priority == "medium" &&
-                    priorityObj.id == currenttask.id &&
-                    classNames.medium,
-                  priorityObj.priority == "low" &&
-                    priorityObj.id == currenttask.id &&
-                    classNames.low,
+                  currenttask.priority == "high" && classNames.high,
+                  currenttask.priority == "medium" && classNames.medium,
+                  currenttask.priority == "low" && classNames.low,
                 )}
               >
                 <div className="flex justify-end">
@@ -231,9 +254,9 @@ function Homepage() {
                   </button>
                   {showdropdown && (
                     <Dropdown
-                      priorityfn={setpriorityObj}
                       dropdown={setshowdropdown}
                       id={currenttask.id}
+                      handlepriority={handlepriority}
                     />
                   )}
                 </div>
@@ -248,13 +271,13 @@ function Homepage() {
                       <button
                         title="Set this task as completed"
                         onClick={() => {
-                          handlePatch(currenttask.id);
+                          handlecompleted(currenttask.id);
                           setids({ editid: currenttask.id, deleteid: null });
                         }}
                       >
                         <Icon
                           icon={
-                            patchmutation.isPending &&
+                            completedmutation.isPending &&
                             currenttask.id == ids.editid
                               ? "codex:loader"
                               : "octicon:tracked-by-closed-completed-16"
