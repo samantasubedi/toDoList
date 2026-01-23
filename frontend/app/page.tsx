@@ -8,6 +8,18 @@ import { toast } from "react-toastify";
 import Empty from "@/components/ui/Empty";
 import axios from "axios";
 import { Dropdown } from "@/components/ui/Dropdown";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import moment from "moment-timezone";
 import {
   QueryClient,
@@ -16,6 +28,19 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+} from "@/components/ui/select";
 type fetchedDataType = {
   id: number | null;
   task: string;
@@ -224,6 +249,34 @@ function Homepage() {
           </Button>
         </form>
       </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button>Filter </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Filter By</DropdownMenuLabel>
+          <DropdownMenuSeparator/>
+          
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Completion</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>Completed </DropdownMenuItem>
+                <DropdownMenuItem>Not Completed</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          
+        
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Priority</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>High</DropdownMenuItem>
+                 <DropdownMenuItem>Medium</DropdownMenuItem>
+                  <DropdownMenuItem>Low</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {query.data && (
         <div className="flex flex-col gap-10 mt-10 mr-5 ml-5 items-center">
