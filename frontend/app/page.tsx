@@ -48,13 +48,7 @@ type fetchedDataType = {
   completed: boolean;
   priority: string;
 };
-type todotype = {
-  id: number | null;
-  task: string;
-  date: string;
-  time: string;
-  completed: boolean;
-};
+
 function Homepage() {
   const { theme, setTheme } = useTheme();
   const [focus, setfocus] = useState(false);
@@ -249,38 +243,58 @@ function Homepage() {
           </Button>
         </form>
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button>Filter </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Filter By</DropdownMenuLabel>
-          <DropdownMenuSeparator/>
-          
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Completion</DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Completed </DropdownMenuItem>
-                <DropdownMenuItem>Not Completed</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-          
-        
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Priority</DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>High</DropdownMenuItem>
-                 <DropdownMenuItem>Medium</DropdownMenuItem>
-                  <DropdownMenuItem>Low</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-          
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {query.data?.length !== 0 && (
+        <div className="flex justify-center mt-10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="dark:bg-neutral-800 dark:text-white bg-blue-900 font-bold hover:bg-blue-800 cursor-pointer transition-all duration-300 ease-in-out">
+                Filter<Icon icon="stash:filter-light" className=""/>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel className="bg bg-gray-200 dark:bg-gray-700">
+                Filter By
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
 
-      {query.data && (
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-gray-100 cursor-pointer hover:bg-gray-200! transition-all duration-250">
+                  Completion
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-neutral-100 mb-1  hover:bg-gray-200! transition-all duration-250">
+                    Completed
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-neutral-100  hover:bg-gray-200! transition-all duration-250">
+                    Not Completed
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-gray-100 mt-1  hover:bg-gray-200! transition-all duration-250">
+                  Priority
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-neutral-100  hover:bg-gray-200! transition-all duration-250">
+                    High
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-neutral-100 mt-1 mb-1  hover:bg-gray-200! transition-all duration-250">
+                    Medium
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-neutral-100  hover:bg-gray-200! transition-all duration-250">
+                    Low
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
+
+      {query.data?.length!==0 && (
         <div className="flex flex-col gap-10 mt-10 mr-5 ml-5 items-center">
-          {query.data.map((currenttask, index, arr) => {
+          {query.data?.map((currenttask, index, arr) => {
             return (
               <div
                 key={currenttask.id}

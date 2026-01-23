@@ -8,7 +8,7 @@ type inputrefrencetype = {
 
 const Empty = ({ inputrefrence }: inputrefrencetype) => {
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center mt-15">
       <div className="flex flex-col gap-5   dark:bg-linear-to-br dark:from-gray-900 dark:to-neutral-900  bg-linear-to-br from-fuchsia-200 to-green-200 p-10 rounded-2xl  ">
         <div className="flex justify-center">
           <Icon
