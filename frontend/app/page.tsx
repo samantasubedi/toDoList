@@ -216,11 +216,11 @@ function Homepage() {
       settodos(completetodos);
     } else if (filtertype == "incomplete") {
       settodos(incompletetodos);
-    } else if (filtertype == "high") {
+    } else if (filtertype == "high priority") {
       settodos(highprioritytoods);
-    } else if (filtertype == "medium") {
+    } else if (filtertype == "medium priority") {
       settodos(mediumprioritytoods);
-    } else if (filtertype == "low") {
+    } else if (filtertype == "low priority") {
       settodos(lowprioritytoods);
     }
   }, [filtertype, query.data, query.isSuccess]);
@@ -267,6 +267,14 @@ function Homepage() {
           <Filter filter={setfiltertype} />
         </div>
       )}
+    { (query.data?.length !== 0 && filtertype !=="none") && <div className="flex gap-2 w-[60%] justify-center">
+        <span className={`flex gap-2  p-2 rounded-md ${filtertype=="low priority"?"bg-green-300":filtertype=="medium priority"?"bg-yellow-200":filtertype=="high priority"?"bg-red-300":filtertype=="complete"?"bg-teal-300":filtertype=="incomplete"?"bg-orange-300":""}`} >
+          <div className="leading-none">{filtertype}</div>
+          <button onClick={()=>{setfiltertype("none")}}>
+            <Icon icon="oui:cross-in-circle-filled" />
+          </button>
+        </span>
+      </div>}
 
       {query.data?.length !== 0 && (
         <div className="flex flex-col gap-10 mt-10 mr-5 ml-5 items-center">

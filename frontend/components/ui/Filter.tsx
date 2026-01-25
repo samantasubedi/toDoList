@@ -64,7 +64,7 @@ export const Filter = ({
             <DropdownMenuSubContent>
               <DropdownMenuItem
                 onClick={() => {
-                  filter("high");
+                  filter("high priority");
                 }}
                 className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-neutral-100  hover:bg-gray-200! transition-all duration-250"
               >
@@ -72,7 +72,7 @@ export const Filter = ({
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  filter("medium");
+                  filter("medium priority");
                 }}
                 className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-neutral-100 mt-1 mb-1  hover:bg-gray-200! transition-all duration-250"
               >
@@ -80,7 +80,7 @@ export const Filter = ({
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  filter("low");
+                  filter("low priority");
                 }}
                 className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-neutral-100  hover:bg-gray-200! transition-all duration-250"
               >
