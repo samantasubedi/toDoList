@@ -268,9 +268,9 @@ function Homepage() {
         </div>
       )}
     { (query.data?.length !== 0 && filtertype !=="none") && <div className="flex gap-2 w-[60%] justify-center">
-        <span className={`flex gap-2  p-2 rounded-md ${filtertype=="low priority"?"bg-green-300":filtertype=="medium priority"?"bg-yellow-200":filtertype=="high priority"?"bg-red-300":filtertype=="complete"?"bg-teal-300":filtertype=="incomplete"?"bg-orange-300":""}`} >
+        <span className={`flex gap-2  p-2 rounded-md ${filtertype=="low priority"?"dark:bg-gray-800 dark:border-2 dark:border-green-800 dark:border-dotted bg-green-300":filtertype=="medium priority"?"dark:bg-gray-800 dark:border-2 dark:border-yellow-500 dark:border-dotted bg-yellow-200":filtertype=="high priority"?"dark:bg-gray-800 dark:border-2 dark:border-red-800 dark:border-dotted bg-red-300":filtertype=="complete"?"dark:bg-gray-800 dark:border-2 dark:border-teal-800 dark:border-dotted bg-teal-300":filtertype=="incomplete"?"dark:bg-gray-800 dark:border-2 dark:border-orange-800 dark:border-dotted bg-orange-300":""}`} >
           <div className="leading-none">{filtertype}</div>
-          <button onClick={()=>{setfiltertype("none")}}>
+          <button className="cursor-pointer" onClick={()=>{setfiltertype("none")}}>
             <Icon icon="oui:cross-in-circle-filled" />
           </button>
         </span>

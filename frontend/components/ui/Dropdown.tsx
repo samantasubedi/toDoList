@@ -28,11 +28,11 @@ export const Dropdown = ({ id, handlepriority }: proptype) => {
         <DropdownMenuContent>
           <DropdownMenuLabel>Priority</DropdownMenuLabel>
           <DropdownMenuSeparator></DropdownMenuSeparator>
-          <DropdownMenuItem onClick={()=>{handlepriority(id,"high")}} className="bg-red-100 hover:bg-red-200! transition-colors duration-300 cursor-pointer">High</DropdownMenuItem>
-          <DropdownMenuItem onClick={()=>{handlepriority(id,"medium")}} className="bg-amber-100 mt-1 mb-1 hover:bg-amber-200! transition-colors duration-300 cursor-pointer">
+          <DropdownMenuItem onClick={()=>{handlepriority(id,"high")}} className="dark:bg-gray-800 dark:border dark:border-dashed  dark:border-red-700 dark:hover:bg-gray-700! bg-red-100 hover:bg-red-200! transition-colors duration-300 cursor-pointer">High</DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>{handlepriority(id,"medium")}} className= "dark:bg-gray-800 dark:border dark:border-dashed dark:border-amber-500 dark:hover:bg-gray-700! bg-amber-100 mt-1 mb-1 hover:bg-amber-200! transition-colors duration-300 cursor-pointer">
             medium
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={()=>{handlepriority(id,"low")}} className="bg-green-100 hover:bg-green-200! transition-colors duration-300 cursor-pointer">Low</DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>{handlepriority(id,"low")}} className= "dark:bg-gray-800 dark:border dark:border-dashed dark:border-green-700 dark:hover:bg-gray-700! bg-green-100 hover:bg-green-200! transition-colors duration-300 cursor-pointer">Low</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
