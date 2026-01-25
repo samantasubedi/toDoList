@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,17 +22,17 @@ export const Dropdown = ({ id, handlepriority }: proptype) => {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger >
           <Icon icon="bi:three-dots-vertical" className="text-2xl mb-2" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>Priority</DropdownMenuLabel>
           <DropdownMenuSeparator></DropdownMenuSeparator>
-          <DropdownMenuItem onClick={()=>{handlepriority(id,"high")}} className="bg-red-100">High</DropdownMenuItem>
-          <DropdownMenuItem onClick={()=>{handlepriority(id,"medium")}} className="bg-amber-100 mt-1 mb-1">
+          <DropdownMenuItem onClick={()=>{handlepriority(id,"high")}} className="bg-red-100 hover:bg-red-200! transition-colors duration-300 cursor-pointer">High</DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>{handlepriority(id,"medium")}} className="bg-amber-100 mt-1 mb-1 hover:bg-amber-200! transition-colors duration-300 cursor-pointer">
             medium
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={()=>{handlepriority(id,"low")}} className="bg-green-100">Low</DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>{handlepriority(id,"low")}} className="bg-green-100 hover:bg-green-200! transition-colors duration-300 cursor-pointer">Low</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
