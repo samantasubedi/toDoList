@@ -19,12 +19,11 @@ import {
 } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 
-
 type fetchedDataType = {
   id: number | null;
   task: string;
   dateAndTime: string;
-  completed: boolean;
+  completed: 1 | 0;
   priority: string;
 };
 
@@ -52,7 +51,7 @@ function Homepage() {
       let fetchedData: fetchedDataType[] = res.data;
       let todos = fetchedData.map((curr, i, arr) => {
         const dateobj = curr.dateAndTime;
-        const date = dateobj;
+        const dateAndTime = dateobj;
         const id = curr.id;
         const task = curr.task;
         const completed = curr.completed;
@@ -60,7 +59,7 @@ function Homepage() {
         return {
           id,
           task,
-          date,
+          dateAndTime,
           completed,
           priority,
         };
@@ -117,7 +116,10 @@ function Homepage() {
     }
   };
 
-  const query = useQuery({ queryFn: fetchdata, queryKey: ["todoData"] });
+  const query = useQuery({
+    queryFn: async () => await fetchdata(),
+    queryKey: ["todoData"],
+  });
 
   const addMutation = useMutation({
     mutationFn: postapi,
@@ -179,11 +181,49 @@ function Homepage() {
   };
 
   const inputrefrence = useRef<HTMLInputElement>(null);
- 
+
   const [ids, setids] = useState<{
     editid: number | null;
     deleteid: number | null;
   }>({ editid: null, deleteid: null });
+
+  const [filtertype, setfiltertype] = useState<string>("none");
+  const alltodos = query?.data;
+
+  const [todos, settodos] = useState<fetchedDataType[] | null>(null);
+
+  useEffect(() => {
+    if (!query.isSuccess || !query.data) return;
+    const completetodos = query.data?.filter(
+      (cur, i, arr) => cur.completed == 1,
+    );
+    const incompletetodos = query.data?.filter((cur) => cur.completed == 0);
+    const highprioritytoods = query.data?.filter((cur) => {
+      return cur.priority == "high";
+    });
+    const mediumprioritytoods = query.data?.filter((cur) => {
+      return cur.priority == "medium";
+    });
+    const lowprioritytoods = query.data?.filter((cur) => {
+      return cur.priority == "low";
+    });
+
+    console.log(completetodos, filtertype);
+
+    if (filtertype == "none" && alltodos) {
+      settodos(() => alltodos);
+    } else if (filtertype == "complete") {
+      settodos(completetodos);
+    } else if (filtertype == "incomplete") {
+      settodos(incompletetodos);
+    } else if (filtertype == "high") {
+      settodos(highprioritytoods);
+    } else if (filtertype == "medium") {
+      settodos(mediumprioritytoods);
+    } else if (filtertype == "low") {
+      settodos(lowprioritytoods);
+    }
+  }, [filtertype, query.data, query.isSuccess]);
 
   return (
     <div className=" h-screen  dark:bg-black">
@@ -224,13 +264,13 @@ function Homepage() {
       </div>
       {query.data?.length !== 0 && (
         <div className="flex justify-center mt-10">
-         <Filter/>
+          <Filter filter={setfiltertype} />
         </div>
       )}
 
-      {query.data?.length!==0 && (
+      {query.data?.length !== 0 && (
         <div className="flex flex-col gap-10 mt-10 mr-5 ml-5 items-center">
-          {query.data?.map((currenttask, index, arr) => {
+          {todos?.map((currenttask, index, arr) => {
             return (
               <div
                 key={currenttask.id}
@@ -244,13 +284,10 @@ function Homepage() {
                 )}
               >
                 <div className="flex justify-end">
-                 
-                    <Dropdown
-                     
-                      id={currenttask.id}
-                      handlepriority={handlepriority}
-                    />
-                 
+                  <Dropdown
+                    id={currenttask.id}
+                    handlepriority={handlepriority}
+                  />
                 </div>
                 <div className="flex justify-between gap-5">
                   <p
@@ -309,13 +346,13 @@ function Homepage() {
                       className="text-lg"
                     />
                     <p className=" font-semibold text-gray-500 text-md">
-                      {moment(currenttask.date).format("YYYY-MM-DD ")}
+                      {moment(currenttask.dateAndTime).format("YYYY-MM-DD ")}
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <Icon icon="carbon:time-filled" className="text-lg" />
                     <p className=" font-semibold text-md text-gray-500">
-                      {moment(currenttask.date).format("hh-mm a")}
+                      {moment(currenttask.dateAndTime).format("hh-mm a")}
                     </p>
                   </div>
                 </div>
