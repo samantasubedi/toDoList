@@ -9,18 +9,7 @@ import Empty from "@/components/ui/Empty";
 import axios from "axios";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { Filter } from "@/components/ui/Filter";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import moment from "moment-timezone";
 import {
   QueryClient,
@@ -29,19 +18,8 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectSeparator,
-  SelectTrigger,
-} from "@/components/ui/select";
+
+
 type fetchedDataType = {
   id: number | null;
   task: string;
@@ -201,7 +179,7 @@ function Homepage() {
   };
 
   const inputrefrence = useRef<HTMLInputElement>(null);
-  const [showdropdown, setshowdropdown] = useState(false);
+ 
   const [ids, setids] = useState<{
     editid: number | null;
     deleteid: number | null;
@@ -266,24 +244,13 @@ function Homepage() {
                 )}
               >
                 <div className="flex justify-end">
-                  <button
-                    title="Options"
-                    onClick={() => {
-                      setshowdropdown(!showdropdown);
-                    }}
-                  >
-                    <Icon
-                      icon="bi:three-dots-vertical"
-                      className="text-2xl mb-2"
-                    />
-                  </button>
-                  {showdropdown && (
+                 
                     <Dropdown
-                      dropdown={setshowdropdown}
+                     
                       id={currenttask.id}
                       handlepriority={handlepriority}
                     />
-                  )}
+                 
                 </div>
                 <div className="flex justify-between gap-5">
                   <p

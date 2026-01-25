@@ -20,8 +20,8 @@ export const Filter = () => {
 
  <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="dark:bg-neutral-800 dark:text-white bg-blue-900 font-bold hover:bg-blue-800 cursor-pointer transition-all duration-300 ease-in-out">
-                Filter<Icon icon="stash:filter-light" className=""/>
+              <Button  className="dark:bg-neutral-800 dark:text-white text-lg bg-blue-900 font-bold hover:bg-blue-800 cursor-pointer transition-all duration-300 ease-in-out">
+              <span> Filter</span> <Icon icon="flowbite:filter-outline" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
