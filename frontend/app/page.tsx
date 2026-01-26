@@ -1,5 +1,5 @@
 "use client";
-import {useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { Icon } from "@iconify/react";
 import { Input } from "@/components/ui/input";
@@ -225,11 +225,11 @@ function Homepage() {
             type="text"
             onChange={handleinputchange}
             value={input}
-            className={`w-150 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white`}
+            className={`md:w-150 w-[75%] border-2 border-gray-400 text-neutral-600 text-xl! md:h-15 h-10 dark:text-white`}
           />
           <Button
             type="submit"
-            className="ml-6 bg-teal-700 dark:text-white font-semibold text-2xl h-13  hover:bg-teal-500 transition-colors duration-300 ease-in-out cursor-pointer"
+            className="md:ml-6 ml-3 bg-teal-700 dark:text-white font-semibold md:text-2xl text-md md:h-13 h-9 hover:bg-teal-500 transition-colors duration-300 ease-in-out cursor-pointer"
           >
             ADD
           </Button>
@@ -241,7 +241,7 @@ function Homepage() {
         </div>
       )}
       {query.data?.length !== 0 && filtertype !== "none" && (
-        <div className="flex gap-2 w-[60%] justify-center">
+        <div className="flex gap-2 w-[60%] justify-center mt-7 mb-2">
           <span
             className={`flex gap-2  p-2 rounded-md ${filtertype == "low priority" ? "dark:bg-gray-800 dark:border-2 dark:border-green-800 dark:border-dotted bg-green-300" : filtertype == "medium priority" ? "dark:bg-gray-800 dark:border-2 dark:border-yellow-500 dark:border-dotted bg-yellow-200" : filtertype == "high priority" ? "dark:bg-gray-800 dark:border-2 dark:border-red-800 dark:border-dotted bg-red-300" : filtertype == "completed" ? "dark:bg-gray-800 dark:border-2 dark:border-teal-800 dark:border-dotted bg-teal-300" : filtertype == "incomplete" ? "dark:bg-gray-800 dark:border-2 dark:border-orange-800 dark:border-dotted bg-orange-300" : ""}`}
           >
@@ -257,21 +257,33 @@ function Homepage() {
           </span>
         </div>
       )}
-{(query.data?.length !==0 && filteredtodos?.length==0 )&&
- <div className="flex justify-center"> <div className="dark:bg-gray-800 flex flex-col items-center w-fit p-5 bg-gray-100 rounded-2xl"> <Icon className="text-gray-400" icon="hugeicons:credit-card-not-found" width="150" height="150" />
-
-<div className="font-bold text-2xl text-gray-800 dark:text-gray-300">No {filtertype} todo found</div>
-<p className="dark:text-gray-300">Try changing your filter or clear your filter to view your todos.</p></div>
-</div>
-}
+      {query.data?.length !== 0 && filteredtodos?.length == 0 && (
+        <div className="flex justify-center">
+          {" "}
+          <div className="m-2 dark:bg-gray-800 flex flex-col items-center w-fit p-5 bg-gray-100 rounded-2xl">
+            {" "}
+            <Icon
+              className="text-gray-400 md:text-9xl text-7xl"
+              icon="hugeicons:credit-card-not-found"
+              
+            />
+            <div className="font-bold md:text-2xl text-xl text-gray-800 dark:text-gray-300">
+              No {filtertype} todo found
+            </div>
+            <p className="dark:text-gray-300 text-sm text-center">
+              Try changing your filter or clear your filter to view your todos.
+            </p>
+          </div>
+        </div>
+      )}
       {query.data?.length !== 0 && (
-        <div className="flex flex-col gap-10 items-center mt-10">
+        <div className="flex flex-col md:gap-10 gap-4 items-center mt-10">
           {filteredtodos?.map((currenttask, index, arr) => {
             return (
               <div
                 key={currenttask.id}
                 className={cn(
-                  `mb-10 bg-linear-to-l from-cyan-100 to-cyan-50  dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit    rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200 `,
+                  `md:mb-10 mb-5 bg-linear-to-l from-cyan-100 to-cyan-50  dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  md:p-10 p-3 md:w-[50%] w-[95%] h-fit rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200 `,
                   currenttask.completed &&
                     "border-l-green-400 dark:border-l-emerald-700",
                   currenttask.priority == "high" && classNames.high,
@@ -285,13 +297,13 @@ function Homepage() {
                     handlepriority={handlepriority}
                   />
                 </div>
-                <div className="flex justify-between gap-5">
+                <div className="flex justify-between md:gap-5 p-2">
                   <p
-                    className={` p-5 w-[90%] rounded-xl font-semibold text-xl text-fuchsia-900 dark:text-white ${currenttask.completed ? "line-through" : ""}`}
+                    className={` md:p-5 p-2 w-[90%] rounded-xl font-semibold text-xl text-fuchsia-900 dark:text-white ${currenttask.completed ? "line-through" : ""}`}
                   >
                     {currenttask.task}
                   </p>
-                  <div className="flex gap-10 border-b-2 border-t-2 px-6 border-teal-300 dark:bg-gray-950 bg-white rounded-4xl">
+                  <div className="flex md:gap-10 gap-7 h-fit py-1 md:py-3 border-b-2 border-t-2 md:px-6 px-2  border-teal-300 dark:bg-gray-950 bg-white md:rounded-4xl rounded-2xl">
                     {!currenttask.completed && (
                       <button
                         title="Set this task as completed"
@@ -308,7 +320,7 @@ function Homepage() {
                               : "octicon:tracked-by-closed-completed-16"
                           }
                           className={cn(
-                            "text-orange-500 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-amber-500",
+                            "text-orange-500 md:text-3xl text-2xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-amber-500",
                           )}
                         />
                       </button>
@@ -329,7 +341,7 @@ function Homepage() {
                             : "material-symbols:delete"
                         }
                         className={cn(
-                          "text-red-700 text-3xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-red-500",
+                          "text-red-700 md:text-3xl text-2xl hover:translate-y-1 transition-all duration-200 cursor-pointer hover:text-red-500",
                         )}
                       />
                     </button>
