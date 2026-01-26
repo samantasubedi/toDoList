@@ -176,7 +176,7 @@ function Homepage() {
     switch (filtertype) {
       case "none":
         return query.data;
-      case "complete":
+      case "completed":
         return query.data.filter((cur) => {
           return cur.completed === 1;
         });
@@ -198,40 +198,6 @@ function Homepage() {
         });
     }
   }, [query.data, filtertype]);
-
-  // useEffect(() => {
-  //   if (!query.isSuccess || !query.data) return;
-  //   const completetodos = query.data?.filter(
-  //     (cur, i, arr) => cur.completed == 1,
-  //   );
-  //   const incompletetodos = query.data?.filter((cur) => cur.completed == 0);
-  //   const highprioritytoods = query.data?.filter((cur) => {
-  //     return cur.priority == "high";
-  //   });
-  //   const mediumprioritytoods = query.data?.filter((cur) => {
-  //     return cur.priority == "medium";
-  //   });
-  //   const lowprioritytoods = query.data?.filter((cur) => {
-  //     return cur.priority == "low";
-  //   });
-
-  //   console.log(completetodos, filtertype);
-
-  //   if (filtertype == "none" && alltodos) {
-  //     settodos(() => alltodos);
-  //   } else if (filtertype == "complete") {
-  //     settodos(completetodos);
-  //   } else if (filtertype == "incomplete") {
-  //     settodos(incompletetodos);
-  //   } else if (filtertype == "high priority") {
-  //     settodos(highprioritytoods);
-  //   } else if (filtertype == "medium priority") {
-  //     settodos(mediumprioritytoods);
-  //   } else if (filtertype == "low priority") {
-  //     settodos(lowprioritytoods);
-  //   }
-  // }, [filtertype, query.data, query.isSuccess]);
-
   return (
     <div className=" h-screen  dark:bg-black">
       <div className="flex justify-end-safe ">
@@ -277,7 +243,7 @@ function Homepage() {
       {query.data?.length !== 0 && filtertype !== "none" && (
         <div className="flex gap-2 w-[60%] justify-center">
           <span
-            className={`flex gap-2  p-2 rounded-md ${filtertype == "low priority" ? "dark:bg-gray-800 dark:border-2 dark:border-green-800 dark:border-dotted bg-green-300" : filtertype == "medium priority" ? "dark:bg-gray-800 dark:border-2 dark:border-yellow-500 dark:border-dotted bg-yellow-200" : filtertype == "high priority" ? "dark:bg-gray-800 dark:border-2 dark:border-red-800 dark:border-dotted bg-red-300" : filtertype == "complete" ? "dark:bg-gray-800 dark:border-2 dark:border-teal-800 dark:border-dotted bg-teal-300" : filtertype == "incomplete" ? "dark:bg-gray-800 dark:border-2 dark:border-orange-800 dark:border-dotted bg-orange-300" : ""}`}
+            className={`flex gap-2  p-2 rounded-md ${filtertype == "low priority" ? "dark:bg-gray-800 dark:border-2 dark:border-green-800 dark:border-dotted bg-green-300" : filtertype == "medium priority" ? "dark:bg-gray-800 dark:border-2 dark:border-yellow-500 dark:border-dotted bg-yellow-200" : filtertype == "high priority" ? "dark:bg-gray-800 dark:border-2 dark:border-red-800 dark:border-dotted bg-red-300" : filtertype == "completed" ? "dark:bg-gray-800 dark:border-2 dark:border-teal-800 dark:border-dotted bg-teal-300" : filtertype == "incomplete" ? "dark:bg-gray-800 dark:border-2 dark:border-orange-800 dark:border-dotted bg-orange-300" : ""}`}
           >
             <div className="leading-none">{filtertype}</div>
             <button
@@ -291,7 +257,13 @@ function Homepage() {
           </span>
         </div>
       )}
+{(query.data?.length !==0 && filteredtodos?.length==0 )&&
+ <div className="flex justify-center"> <div className="flex flex-col items-center w-fit p-5 bg-gray-100 rounded-2xl"> <Icon className="text-gray-400" icon="hugeicons:credit-card-not-found" width="150" height="150" />
 
+<div className="font-bold text-2xl text-gray-800">No {filtertype} todo found</div>
+<p>Try changing your filter or clear your filter to view your todos.</p></div>
+</div>
+}
       {query.data?.length !== 0 && (
         <div className="flex flex-col gap-10 items-center mt-10">
           {filteredtodos?.map((currenttask, index, arr) => {

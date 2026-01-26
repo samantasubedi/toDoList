@@ -40,7 +40,7 @@ export const Filter = ({
             <DropdownMenuSubContent>
               <DropdownMenuItem
                 onClick={() => {
-                  filter("complete");
+                  filter("completed");
                 }}
                 className="dark:bg-gray-800 font-semibold hover:dark:bg-gray-950!  bg-neutral-100 mb-1  hover:bg-gray-200! transition-all duration-250"
               >
