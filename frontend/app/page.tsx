@@ -257,25 +257,27 @@ function Homepage() {
           </span>
         </div>
       )}
-      {query.data?.length !== 0 && filteredtodos?.length == 0 && (
-        <div className="flex justify-center">
-          {" "}
-          <div className="m-2 dark:bg-gray-800 flex flex-col items-center w-fit p-5 bg-gray-100 rounded-2xl">
+      {query.data?.length !== 0 &&
+        filteredtodos?.length == 0 &&
+        filtertype !== "none" && (
+          <div className="flex justify-center">
             {" "}
-            <Icon
-              className="text-gray-400 md:text-9xl text-7xl"
-              icon="hugeicons:credit-card-not-found"
-              
-            />
-            <div className="font-bold md:text-2xl text-xl text-gray-800 dark:text-gray-300">
-              No {filtertype} todo found
+            <div className="m-2 dark:bg-gray-800 flex flex-col items-center w-fit p-5 bg-gray-100 rounded-2xl">
+              {" "}
+              <Icon
+                className="text-gray-400 md:text-9xl text-7xl"
+                icon="hugeicons:credit-card-not-found"
+              />
+              <div className="font-bold md:text-2xl text-xl text-gray-800 dark:text-gray-300">
+                No {filtertype} todo found
+              </div>
+              <p className="dark:text-gray-300 text-sm text-center">
+                Try changing your filter or clear your filter to view your
+                todos.
+              </p>
             </div>
-            <p className="dark:text-gray-300 text-sm text-center">
-              Try changing your filter or clear your filter to view your todos.
-            </p>
           </div>
-        </div>
-      )}
+        )}
       {query.data?.length !== 0 && (
         <div className="flex flex-col md:gap-10 gap-4 items-center mt-10">
           {filteredtodos?.map((currenttask, index, arr) => {
