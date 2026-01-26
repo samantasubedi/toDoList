@@ -11,6 +11,8 @@ export const dbConnect = async () => {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       waitForConnections: true,
+      connectionLimit: 4,
+      queueLimit: 0,
     });
     await pool.query("SELECT 1");
     console.log("sucessfully connected to the database");
