@@ -53,11 +53,11 @@ export const patchTodo = async (req, res) => {
   }
 };
 
-export const deleteTodo = (req, res) => {
+export const deleteTodo = async(req, res) => {
   const id = req.body.id;
   try {
     const pool = getDB();
-    pool.query("DELETE FROM todos WHERE id=?", [id]);
+    await pool.query("DELETE FROM todos WHERE id=?", [id]);
     res.json({ message: `todo with id ${id} deleted` });
   } catch (err) {
     console.log("cannot delete  todo", err);
