@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {useMemo, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { Icon } from "@iconify/react";
 import { Input } from "@/components/ui/input";
@@ -199,7 +199,7 @@ function Homepage() {
     }
   }, [query.data, filtertype]);
   return (
-    <div className=" h-screen  dark:bg-black">
+    <div className="h-fit min-h-screen dark:bg-black">
       <div className="flex justify-end-safe ">
         <button
           className="cursor-pointer text-3xl mr-5"
@@ -258,10 +258,10 @@ function Homepage() {
         </div>
       )}
 {(query.data?.length !==0 && filteredtodos?.length==0 )&&
- <div className="flex justify-center"> <div className="flex flex-col items-center w-fit p-5 bg-gray-100 rounded-2xl"> <Icon className="text-gray-400" icon="hugeicons:credit-card-not-found" width="150" height="150" />
+ <div className="flex justify-center"> <div className="dark:bg-gray-800 flex flex-col items-center w-fit p-5 bg-gray-100 rounded-2xl"> <Icon className="text-gray-400" icon="hugeicons:credit-card-not-found" width="150" height="150" />
 
-<div className="font-bold text-2xl text-gray-800">No {filtertype} todo found</div>
-<p>Try changing your filter or clear your filter to view your todos.</p></div>
+<div className="font-bold text-2xl text-gray-800 dark:text-gray-300">No {filtertype} todo found</div>
+<p className="dark:text-gray-300">Try changing your filter or clear your filter to view your todos.</p></div>
 </div>
 }
       {query.data?.length !== 0 && (
