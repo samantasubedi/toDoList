@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { Icon } from "@iconify/react";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,6 @@ import Empty from "@/components/ui/Empty";
 import axios from "axios";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { Filter } from "@/components/ui/Filter";
-
 import moment from "moment-timezone";
 import {
   QueryClient,
@@ -29,10 +28,9 @@ type fetchedDataType = {
 
 function Homepage() {
   const { theme, setTheme } = useTheme();
-  const [focus, setfocus] = useState(false);
   const [input, setinput] = useState<string>("");
   const queryclient = useQueryClient();
-
+  const apiURL = process.env.NEXT_PUBLIC_API_URL;
   const handleinputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const data = e.target.value;
     setinput(data);
@@ -47,25 +45,10 @@ function Homepage() {
 
   async function fetchdata() {
     try {
-      let res = await axios.get("http://localhost:3307/api/routes");
+      let res = await axios.get(`${apiURL}/api/routes`);
       let fetchedData: fetchedDataType[] = res.data;
-      let todos = fetchedData.map((curr, i, arr) => {
-        const dateobj = curr.dateAndTime;
-        const dateAndTime = dateobj;
-        const id = curr.id;
-        const task = curr.task;
-        const completed = curr.completed;
-        const priority = curr.priority;
-        return {
-          id,
-          task,
-          dateAndTime,
-          completed,
-          priority,
-        };
-      });
       console.log("fetched data is ", fetchedData);
-      return todos;
+      return fetchedData;
     } catch (err) {
       console.log(`couldnt fetch todos ${err}`);
       return [];
@@ -74,9 +57,9 @@ function Homepage() {
 
   const postapi = async (input: string) => {
     try {
-      await axios.post("http://localhost:3307/api/routes", {
+      await axios.post(`${apiURL}/api/routes`, {
         task: input,
-        completed: false,
+        completed: 0,
         dateAndTime: new Date(),
       });
     } catch (err) {
@@ -86,7 +69,7 @@ function Homepage() {
 
   const patchcompleted = async (id: number | null) => {
     try {
-      await axios.patch("http://localhost:3307/api/routes", { id: id });
+      await axios.patch(`${apiURL}/api/routes`, { id: id });
     } catch (err) {
       console.log(err);
     }
@@ -99,7 +82,7 @@ function Homepage() {
     priority: string;
   }) => {
     try {
-      await axios.patch("http://localhost:3307/api/routes", {
+      await axios.patch(`${apiURL}/api/routes`, {
         id: id,
         priority: priority,
       });
@@ -110,7 +93,7 @@ function Homepage() {
 
   const deleteTodo = async (id: number | null) => {
     try {
-      await axios.delete("http://localhost:3307/api/routes", { data: { id } });
+      await axios.delete(`${apiURL}/api/routes`, { data: { id } });
     } catch (err) {
       console.log(err);
     }
@@ -188,42 +171,66 @@ function Homepage() {
   }>({ editid: null, deleteid: null });
 
   const [filtertype, setfiltertype] = useState<string>("none");
-  const alltodos = query?.data;
-
-  const [todos, settodos] = useState<fetchedDataType[] | null>(null);
-
-  useEffect(() => {
-    if (!query.isSuccess || !query.data) return;
-    const completetodos = query.data?.filter(
-      (cur, i, arr) => cur.completed == 1,
-    );
-    const incompletetodos = query.data?.filter((cur) => cur.completed == 0);
-    const highprioritytoods = query.data?.filter((cur) => {
-      return cur.priority == "high";
-    });
-    const mediumprioritytoods = query.data?.filter((cur) => {
-      return cur.priority == "medium";
-    });
-    const lowprioritytoods = query.data?.filter((cur) => {
-      return cur.priority == "low";
-    });
-
-    console.log(completetodos, filtertype);
-
-    if (filtertype == "none" && alltodos) {
-      settodos(() => alltodos);
-    } else if (filtertype == "complete") {
-      settodos(completetodos);
-    } else if (filtertype == "incomplete") {
-      settodos(incompletetodos);
-    } else if (filtertype == "high priority") {
-      settodos(highprioritytoods);
-    } else if (filtertype == "medium priority") {
-      settodos(mediumprioritytoods);
-    } else if (filtertype == "low priority") {
-      settodos(lowprioritytoods);
+  const filteredtodos = useMemo(() => {
+    if (!query.isSuccess || !query.data) return [];
+    switch (filtertype) {
+      case "none":
+        return query.data;
+      case "complete":
+        return query.data.filter((cur) => {
+          return cur.completed === 1;
+        });
+      case "incomplete":
+        return query.data.filter((cur) => {
+          return cur.completed === 0;
+        });
+      case "high priority":
+        return query.data.filter((cur) => {
+          return cur.priority === "high";
+        });
+      case "medium priority":
+        return query.data.filter((cur) => {
+          return cur.priority === "medium";
+        });
+      case "low priority":
+        return query.data.filter((cur) => {
+          return cur.priority === "low";
+        });
     }
-  }, [filtertype, query.data, query.isSuccess]);
+  }, [query.data, filtertype]);
+
+  // useEffect(() => {
+  //   if (!query.isSuccess || !query.data) return;
+  //   const completetodos = query.data?.filter(
+  //     (cur, i, arr) => cur.completed == 1,
+  //   );
+  //   const incompletetodos = query.data?.filter((cur) => cur.completed == 0);
+  //   const highprioritytoods = query.data?.filter((cur) => {
+  //     return cur.priority == "high";
+  //   });
+  //   const mediumprioritytoods = query.data?.filter((cur) => {
+  //     return cur.priority == "medium";
+  //   });
+  //   const lowprioritytoods = query.data?.filter((cur) => {
+  //     return cur.priority == "low";
+  //   });
+
+  //   console.log(completetodos, filtertype);
+
+  //   if (filtertype == "none" && alltodos) {
+  //     settodos(() => alltodos);
+  //   } else if (filtertype == "complete") {
+  //     settodos(completetodos);
+  //   } else if (filtertype == "incomplete") {
+  //     settodos(incompletetodos);
+  //   } else if (filtertype == "high priority") {
+  //     settodos(highprioritytoods);
+  //   } else if (filtertype == "medium priority") {
+  //     settodos(mediumprioritytoods);
+  //   } else if (filtertype == "low priority") {
+  //     settodos(lowprioritytoods);
+  //   }
+  // }, [filtertype, query.data, query.isSuccess]);
 
   return (
     <div className=" h-screen  dark:bg-black">
@@ -252,7 +259,7 @@ function Homepage() {
             type="text"
             onChange={handleinputchange}
             value={input}
-            className={`w-150 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white ${focus ? "" : ""}`}
+            className={`w-150 border-2 border-gray-400 text-neutral-600 text-xl! h-15 dark:text-white`}
           />
           <Button
             type="submit"
@@ -267,23 +274,32 @@ function Homepage() {
           <Filter filter={setfiltertype} />
         </div>
       )}
-    { (query.data?.length !== 0 && filtertype !=="none") && <div className="flex gap-2 w-[60%] justify-center">
-        <span className={`flex gap-2  p-2 rounded-md ${filtertype=="low priority"?"dark:bg-gray-800 dark:border-2 dark:border-green-800 dark:border-dotted bg-green-300":filtertype=="medium priority"?"dark:bg-gray-800 dark:border-2 dark:border-yellow-500 dark:border-dotted bg-yellow-200":filtertype=="high priority"?"dark:bg-gray-800 dark:border-2 dark:border-red-800 dark:border-dotted bg-red-300":filtertype=="complete"?"dark:bg-gray-800 dark:border-2 dark:border-teal-800 dark:border-dotted bg-teal-300":filtertype=="incomplete"?"dark:bg-gray-800 dark:border-2 dark:border-orange-800 dark:border-dotted bg-orange-300":""}`} >
-          <div className="leading-none">{filtertype}</div>
-          <button className="cursor-pointer" onClick={()=>{setfiltertype("none")}}>
-            <Icon icon="oui:cross-in-circle-filled" />
-          </button>
-        </span>
-      </div>}
+      {query.data?.length !== 0 && filtertype !== "none" && (
+        <div className="flex gap-2 w-[60%] justify-center">
+          <span
+            className={`flex gap-2  p-2 rounded-md ${filtertype == "low priority" ? "dark:bg-gray-800 dark:border-2 dark:border-green-800 dark:border-dotted bg-green-300" : filtertype == "medium priority" ? "dark:bg-gray-800 dark:border-2 dark:border-yellow-500 dark:border-dotted bg-yellow-200" : filtertype == "high priority" ? "dark:bg-gray-800 dark:border-2 dark:border-red-800 dark:border-dotted bg-red-300" : filtertype == "complete" ? "dark:bg-gray-800 dark:border-2 dark:border-teal-800 dark:border-dotted bg-teal-300" : filtertype == "incomplete" ? "dark:bg-gray-800 dark:border-2 dark:border-orange-800 dark:border-dotted bg-orange-300" : ""}`}
+          >
+            <div className="leading-none">{filtertype}</div>
+            <button
+              className="cursor-pointer"
+              onClick={() => {
+                setfiltertype("none");
+              }}
+            >
+              <Icon icon="oui:cross-in-circle-filled" />
+            </button>
+          </span>
+        </div>
+      )}
 
       {query.data?.length !== 0 && (
-        <div className="flex flex-col gap-10 mt-10 mr-5 ml-5 items-center">
-          {todos?.map((currenttask, index, arr) => {
+        <div className="flex flex-col gap-10 items-center mt-10">
+          {filteredtodos?.map((currenttask, index, arr) => {
             return (
               <div
                 key={currenttask.id}
                 className={cn(
-                  `bg-linear-to-l from-cyan-100 to-cyan-50  dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit    rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200 `,
+                  `mb-10 bg-linear-to-l from-cyan-100 to-cyan-50  dark:shadow-gray-700 dark:bg-linear-to-l dark:from-gray-900 dark:to-gray-950 border-l-20  p-10 w-[50%] h-fit    rounded-xl hover:translate-y-2 shadow-md shadow-gray-600 transition-all duration-200 `,
                   currenttask.completed &&
                     "border-l-green-400 dark:border-l-emerald-700",
                   currenttask.priority == "high" && classNames.high,
