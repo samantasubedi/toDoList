@@ -10,6 +10,7 @@ import axios from "axios";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { Filter } from "@/components/ui/Filter";
 import moment from "moment-timezone";
+import Loader from "@/components/ui/Loader";
 import {
   QueryClient,
   useMutation,
@@ -235,7 +236,7 @@ function Homepage() {
           </Button>
         </form>
       </div>
-      {query.data?.length !== 0 && (
+      {(!query.isLoading && query.data?.length!== 0) && (
         <div className="flex justify-center mt-10">
           <Filter filter={setfiltertype} />
         </div>
@@ -371,7 +372,8 @@ function Homepage() {
           })}
         </div>
       )}
-      {query.data?.length == 0 && <Empty inputrefrence={inputrefrence} />}
+    <div className="flex justify-center mt-10">{query.isLoading && <Loader/>}
+      {query.data?.length == 0 && <Empty inputrefrence={inputrefrence} />}</div>  
     </div>
   );
 }
